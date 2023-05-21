@@ -26,4 +26,4 @@ EXPOSE 7860
 
 
 
-CMD "flask run --host=0.0.0.0 --port=7860"
+RUN flask run --host=0.0.0.0 --port=7860
