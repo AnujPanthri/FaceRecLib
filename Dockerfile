@@ -12,7 +12,9 @@ RUN apt-get update && \
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python3 pip vim mc wget curl 
 
 #  to make open-cv work
-RUN apt-get install ffmpeg libsm6 libxext6 -y
+RUN apt-get install ffmpeg libsm6 libxext6 python3-mysql.connector -y
+# to make mysql.connector work
+RUN apt-get install python3-mysql.connector -y
 
 
 COPY . /app
