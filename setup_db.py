@@ -1,3 +1,4 @@
+import os
 import mysql.connector
 from werkzeug.security import generate_password_hash,check_password_hash
 
@@ -6,10 +7,10 @@ dataBase = mysql.connector.connect(
     host="bnadwttldj2i5cq9aymp-mysql.services.clever-cloud.com",
     user="uvfqvcypihhznd2u",
     port=3306,
-    password="CX6TBadRQYFqprozqDTo",
+    password=os.environ["mysql_password"],
     database="bnadwttldj2i5cq9aymp"
 )
-  
+
 # preparing a cursor object
 cursorObject = dataBase.cursor()
 
