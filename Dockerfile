@@ -7,7 +7,12 @@ RUN apt-get update && \
     sudo
 
 
+
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python3 pip vim mc wget curl 
+
+#  to make open-cv work
+RUN apt-get install ffmpeg libsm6 libxext6 -y
 
 
 COPY . /app
