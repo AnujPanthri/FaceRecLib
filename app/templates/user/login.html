@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block css %}
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='user/login.css') }}">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"> -->
+{% endblock %}
+{% block body %}        
+        <form id="container" action="/user/authenticate/" method="post">
+            <h1>Log-In</h1>
+            <p class="{{message_class}}">{{message}}</p>
+            <div>
+                <p>Enter Username:</p>
+                <input type="username" name="username" required>
+            </div>
+            <div>
+                <p>Enter password:</p>
+                <input type="password" name="password" required>
+            </div>
+            <input type="submit">
+            <!-- <button>Sign-in</button> -->
+            
+        </form>
+        <script src="{{ url_for('static',filename='user/login.js') }}"></script>
+        
+{% endblock %}

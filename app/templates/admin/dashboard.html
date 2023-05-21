@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block css %}
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='admin/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+{% endblock %}
+{% block body %}        
+
+
+    <table id="access_requests_table">
+        <tr>
+            <th>Username</th>
+            <th>request message</th>
+            <th>accept/cancel</th>
+        </tr> 
+    </table>
+    <br>
+    <br>
+    <table id="access_granted_table">
+        <tr>
+            <th>Username</th>
+            <th>remove_access</th>
+        </tr> 
+    </table>
+        
+        <script src="{{ url_for('static',filename='admin/dashboard.js') }}"></script>
+        
+{% endblock %}

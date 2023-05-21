@@ -1,0 +1,49 @@
+#container{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    display: flex;
+    row-gap: 20px;
+    flex-direction: column;
+    align-items: center;
+    border:2px solid black;
+    /* box-sizing: border-box; */
+    
+    padding: 20px;
+}
+#container>h1{
+    text-align: center;
+    margin: 0px;
+}
+#container>p{
+    text-align: center;
+    margin: 0px;
+    margin-bottom: 5px;
+    visibility: hidden;
+    color:red;
+}
+.active{
+    visibility: visible !important;
+}
+
+#container>div{
+    display: flex;
+    width:314px;
+    justify-content: space-between;
+}
+#container>div>p{
+    margin: 0;
+}
+
+#container>div>input{
+    border:none;
+    outline:none;
+    border-bottom:1px solid black;
+}
+
+#container>input{
+    width:30%;
+    margin: 10px;
+}
+

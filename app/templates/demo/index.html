@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}Face Recognization{% endblock %}
+{% block css %}
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='demo/index/dark.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+{% endblock %}
+{% block body %}        
+    <i  class="fa-solid fa-gear settings_btn" onclick="show_settings();"></i>
+    <div id="container">
+        <div class="left-section">
+            <!-- Databases images upload -->
+            <div id="db_images_bar">
+                <button class="btn add_button" onclick="document.querySelector('.add_button>input').click();">
+                    <input type="file" accept="image/*" style="display:none;" >
+                    <i class="fa-solid fa-plus"></i>
+                    add image
+                </button>
+                <div id="db_images"></div>
+            </div>
+
+            <!-- Face Recognition output -->
+            <img id="face_rec_image">
+            
+            <!-- Face Recognition buttons -->
+            <div class="buttons">
+                <div>
+                    <input type="file" id="face_rec_input" accept="image/*" style="display:none;" onchange="load_image_preview(this);">
+                    <input type="button" value="Upload" class="btn" onclick="document.querySelector('.buttons>div>#face_rec_input').click();">
+                    <input type="button" value="recognize" class="btn" onclick="update_crops_labels(document.querySelector('.buttons>div>#face_rec_input'))">
+                </div>
+            </div>
+        </div>
+        <div class="right-section">
+            <!--all unassigned cropped images-->
+            <div id="unassigned_faces" class="droppable" ondragover="allowDrop(event)" ondrop="drop(event,this)"></div>
+            <p>Drag faces to names</p>
+            <!--assigned faces with names list-->
+            <div id="name_list">
+                <div class="person droppable" data-dropto=".faces" ondragover="allowDrop(event)" ondrop="drop(event,this.querySelector('.faces'))">
+                    <input type="text" value="person-1" ondrop="return false;" onkeyup="deselect(event,this);">
+                    <div class="faces"></div>
+                    <i class="fa-solid fa-xmark" onclick="remove_person(this.parentElement);"></i>
+                    
+                </div>
+            </div>
+            <!--add name button-->
+            <div class="buttons">
+                <input type="button" value="add name" class="btn" onclick="add_person();" id="add_name_btn">
+            </div>
+            
+
+        </div>
+    </div>
+    
+    <div id="settings_menu">
+        <h1>settings</h1>
+        <i class="fa-solid fa-xmark close_btn" onclick="hide_settings();"></i>
+        
+        <div class="settings">
+            <div class="reset_btn_container">
+                <i class="fa-solid fa-rotate-left reset_btn" onclick="reset_settings();"></i>
+            </div>
+            <dl>
+                <li>Face detector Modes</li>
+                <dd>
+                    <a>db_mode :</a>
+                    <select id="db_mode">
+                        <option value="small">small</option>
+                        <option value="large">large</option>
+                        <option value="both">both</option>
+                      </select>
+                    
+                </dd>
+                <dd>
+                    <a>fr_mode :</a>
+                    <select id="fr_mode">
+                        <option value="small">small</option>
+                        <option value="large">large</option>
+                        <option value="both">both</option>
+                      </select>
+                    
+                </dd>
+                <br>
+                <li>Face detector</li>
+                <dd>
+                    <a>p_thres :</a>
+                    <input id="p_thres" type="range" min="0" max="1" step="0.05" oninput="p_thresValue.innerText=this.value">
+                    <a id="p_thresValue"></a>
+                </dd>
+                <dd>
+                    <a>nms_thres :</a>
+                    <input id="nms_thres" type="range" min="0" max="1" step="0.05" oninput="nms_thresValue.innerText=this.value">
+                    <a id="nms_thresValue"></a>
+                </dd>
+                <dd>
+                    <a>small_size :</a>
+                    <input id="small_size" type="range" min="64" max="2080" step="32" oninput="small_sizeValue.innerText=this.value">
+                    <a id="small_sizeValue"></a>
+                </dd>
+                <dd>
+                    <a>large_size :</a>
+                    <input id="large_size" type="range" min="64" max="2080" step="32" oninput="large_sizeValue.innerText=this.value">
+                    <a id="large_sizeValue"></a>
+                </dd>
+                <br>
+                <li>Face Recognizer</li>
+                <dd>
+                    <a>d_thres :</a>
+                    <input id="d_thres" type="range" min="0" max="1" step="0.05" oninput="d_thresValue.innerText=this.value">
+                    <a id="d_thresValue"></a>
+                </dd>
+                <br>
+                <li>Aligner</li>
+                <dd>
+                    <a>a_thres :</a>
+                    <input id="a_thres" type="range" min="0" max="1" step="0.05" oninput="a_thresValue.innerText=this.value">
+                    <a id="a_thresValue"></a>
+                </dd>
+                
+                
+            </dl>
+        </div>
+        <div id="save_btn_container"><button id="save_settings_btn" onclick="update_settings();">Save</button></div>
+        
+    </div>
+
+    <script src="{{ url_for('static',filename='demo/index/script.js' ) }}"></script>
+
+    {% endblock %}
