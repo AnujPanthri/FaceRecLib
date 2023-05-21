@@ -28,8 +28,8 @@ RUN pwd
 RUN ls -l
 
 
-EXPOSE 7860
+EXPOSE 3306
 
 
 
-RUN flask run --host=0.0.0.0 --port=7860
+RUN flask run --host=0.0.0.0 --port=3306
