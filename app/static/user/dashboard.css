@@ -275,7 +275,7 @@ button:hover{
     right: 30px;   
 }
 .reset_btn_container>.reset_btn{
-    color:white;
+    color:black;
     position: fixed;
     font-size: larger;
     background-color: transparent;

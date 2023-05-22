@@ -217,26 +217,24 @@ def get_image_size(mode):
 def get_settings():
     global settings
     
-    if (settings.keys().__len__()==0):
+    dataBase = access_database_as_admin()
+    cursor=dataBase.cursor()
+    cursor.execute("select * from user_settings where username=%s",[session['user']['username']])
+    settings=cursor.fetchone()
+    columns=cursor.column_names
 
-        dataBase = access_database_as_admin()
-        cursor=dataBase.cursor()
-        cursor.execute("select * from user_settings where username=%s",[session['user']['username']])
+    if settings is None:
+        # get default settings and insert a row in user_settings
+        cursor.execute("select p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode from default_settings where page='user'")
         settings=cursor.fetchone()
         columns=cursor.column_names
-
-        if settings is None:
-            # get default settings and insert a row in user_settings
-            cursor.execute("select p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode from default_settings where page='user'")
-            settings=cursor.fetchone()
-            columns=cursor.column_names
-            cursor.execute(f"insert into user_settings(username,{','.join(columns)}) values(%s,{','.join(map(lambda x:'%s',columns))})",(session['user']['username'],)+settings)
-        
-        
-        settings= dict(zip(columns, settings))
-        # Disconnecting from the server
-        dataBase.commit()
-        dataBase.close()
+        cursor.execute(f"insert into user_settings(username,{','.join(columns)}) values(%s,{','.join(map(lambda x:'%s',columns))})",(session['user']['username'],)+settings)
+    
+    
+    settings= dict(zip(columns, settings))
+    # Disconnecting from the server
+    dataBase.commit()
+    dataBase.close()
 
     print("\n\nsee:",settings['p_thres'],"\n\n")
 
@@ -250,7 +248,8 @@ def reset_settings():
     cursor.execute("select p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode from default_settings where page='user'")
     settings=cursor.fetchone()
     columns=cursor.column_names
-    cursor.execute(f"insert into user_settings(username,{','.join(columns)}) values(%s,{','.join(map(lambda x:'%s',columns))})",(session['user']['username'],)+settings)
+    print(settings)
+    cursor.execute(f"update user_settings set {','.join(list(map(lambda x:x+'=%s',columns)))} where username=%s;",settings+(session['user']['username'],))
     
     # Disconnecting from the server
     dataBase.commit()
