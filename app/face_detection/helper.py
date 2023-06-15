@@ -1,7 +1,9 @@
 import cv2
 import numpy as np
+from app.face_detection.inference import square_pad
 
 
+square_maker=square_pad(color=(255,255,255))
 def get_crops(img,objs_found,aligner=None,resize:tuple=None):
     img_h,img_w,_=img.shape
     all_crops=[]
@@ -17,6 +19,7 @@ def get_crops(img,objs_found,aligner=None,resize:tuple=None):
             crop=aligner.align_image(crop)
             if crop is None: continue
         if resize is not None:
+            crop=square_maker(crop)
             crop=cv2.resize(crop,resize)
         all_crops.append(crop)
     

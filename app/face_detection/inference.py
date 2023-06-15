@@ -53,16 +53,18 @@ class square_crop:
         raise NotImplementedError
 
 class square_pad:
-    def __call__(self,img,color=(0,0,0)):
+    def __init__(self,color=(0,0,0)):
+        self.color=color
+    def __call__(self,img):
         h,w=img.shape[:2]
         self.w_added,self.h_added=0,0
         if h>w:
             self.w_added=int((h-w)/2)
-            padding=(np.ones([h,self.w_added,3])*np.array(color)[None,None,:]).astype("uint8")
+            padding=(np.ones([h,self.w_added,3])*np.array(self.color)[None,None,:]).astype("uint8")
             img=np.concatenate([padding,img,padding],axis=1)
         elif w>h:
             self.h_added=int((w-h)/2)
-            padding=(np.ones([self.h_added,w,3])*np.array(color)[None,None,:]).astype("uint8")
+            padding=(np.ones([self.h_added,w,3])*np.array(self.color)[None,None,:]).astype("uint8")
             img=np.concatenate([padding,img,padding],axis=0)
         h,w=img.shape[:2]
         

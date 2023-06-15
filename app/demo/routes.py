@@ -150,7 +150,7 @@ def face_recognition():
     for i in range(len(names)):
         print(names[i],":",db_faces_features[i].shape)
     
-    # face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="avg",recognition_mode="repeat")
+    # face_recognizer.set_face_db_and_mode(faces=names,db_faces_features=db_faces_features,distance_mode="avg",recognition_mode="repeat")
     face_recognizer.set_face_db_and_mode(faces=names,db_faces_features=db_faces_features,distance_mode="best",recognition_mode="repeat")
     
     face_detector.image_size=get_image_size(session["demo"]['settings']['fr_mode'])
