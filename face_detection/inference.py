@@ -277,7 +277,7 @@ if __name__=="__main__":
     plt.show()
     # cv2.imwrite("test_output.jpg",pred_img[:,:,::-1])
 else:
-    import app.face_detection.create_load_model as load_model_lib
-    import app.face_detection.decode_yolo_v2 as decode_model_lib
-    from app.face_detection.create_load_model import *
-    from app.face_detection.decode_yolo_v2 import *
+    import face_detection.create_load_model as load_model_lib
+    import face_detection.decode_yolo_v2 as decode_model_lib
+    from face_detection.create_load_model import *
+    from face_detection.decode_yolo_v2 import *

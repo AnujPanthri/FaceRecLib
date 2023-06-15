@@ -4,7 +4,7 @@ from matplotlib.patches import Rectangle
 import copy
 import tensorflow.keras.backend as K
 import cv2
-from app.face_detection.config import cell_size,idx_to_class,class_to_idx,class_colors
+from face_detection.config import cell_size,idx_to_class,class_to_idx,class_colors
 
 
 

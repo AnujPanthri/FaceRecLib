@@ -1,18 +1,17 @@
 from flask import Flask,session
 from datetime import timedelta
 
-from app.face_detection import inference as fd
-from app.face_detection.helper import get_crops as fd_get_crops
-from app.face_recognition import inference as fr
-from app.face_recognition.aligner import aligner
-from app.face_recognition import helper as fr_helper
+from face_detection import inference as fd
+from face_detection.helper import get_crops as fd_get_crops
+from face_recognition import inference as fr
+from face_recognition.aligner import aligner
+from face_recognition import helper as fr_helper
 
 
 
-face_detector=fd.face_detection("app/face_detection/Models/v1")
+face_detector=fd.face_detection("face_detection/Models/v1")
 face_detector.square_preprocessing=fd.square_pad()
-# face_recognizer=fr.face_recognition("app/face_recognition/feature_extractor.h5")
-face_recognizer=fr.face_recognition("app/face_recognition/Models/v1")
+face_recognizer=fr.face_recognition("face_recognition/Models/v1")
 aligner_obj=aligner(min_aligner_confidence=0.6)
 
 image_size=544

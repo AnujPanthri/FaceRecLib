@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
-from app.face_detection.inference import square_pad
+from face_detection.inference import square_pad
 
 
-square_maker=square_pad(color=(255,255,255))
+# square_maker=square_pad(color=(255,255,255))
+square_maker=square_pad(color=(0,0,0))
 def get_crops(img,objs_found,aligner=None,resize:tuple=None):
     img_h,img_w,_=img.shape
     all_crops=[]

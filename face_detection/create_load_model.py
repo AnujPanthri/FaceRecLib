@@ -1,7 +1,7 @@
 import os
 import tensorflow as tf
 from tensorflow.keras import Model,layers
-from app.face_detection.config import class_names
+from face_detection.config import class_names
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 # custom layer for reshaping last layer

@@ -13,8 +13,8 @@ import importlib
 
 
 
-from app.face_recognition import config
-from app.face_recognition.aligner import  aligner
+from face_recognition import config
+from face_recognition.aligner import  aligner
 
 
 
