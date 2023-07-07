@@ -24,15 +24,22 @@ class face_recognition:
     # print(config_file_path)
     self.model_config= importlib.import_module(config_file_path)
     # print(self.model_config)
-    self.thres=thres if thres is not None else self.model_config.thres
+    self.thres=thres if thres is not None else self.model_config.d_thres
     self.aligner=aligner(min_aligner_confidence)  if min_aligner_confidence is not None else aligner(config.min_aligner_confidence)
     self.feature_extractor=tf.keras.models.load_model(model_path+"/model.h5",compile=False)
     
     
 
-  def euclidean_distance(self,vectors):
-    squared_sum=np.sum(np.square(vectors[0]-vectors[1]),axis=-1,keepdims=True)
-    return np.sqrt(np.maximum(squared_sum,1e-7))
+  # def euclidean_distance(self,vectors):
+  #   squared_sum=np.sum(np.square(vectors[0]-vectors[1]),axis=-1,keepdims=True)
+  #   return np.sqrt(np.maximum(squared_sum,1e-7))
+
+  def new_distance(self,vectors):
+    ''' this distance metric is -1 to 1 
+        and it gives values close to 1 when matching 
+        and values close to -1 when not matching
+    '''
+    return (vectors[0]*vectors[1]).sum(-1)
 
 
 
@@ -55,12 +62,12 @@ class face_recognition:
       except:
         raise AssertionError(f"db_face_features shape{db_face_features.shape} does not match crop_img_features shape{new_crop_img_features.shape}")
       
-      distance=np.min(self.euclidean_distance([db_face_features,new_crop_img_features]),axis=0)[0]
+      distance=np.max(self.new_distance([db_face_features,new_crop_img_features]),axis=0)
       
-      if distance<=self.thres:
+      if distance>self.thres:
         all_distances.append(distance) # obj distance wrt to all faces in database
       else:
-        all_distances.append(self.model_config.large_distance) # not the person garruntied
+        all_distances.append(self.model_config.large_distance) # not the person guaranteed
     return all_distances
 
 
@@ -69,8 +76,8 @@ class face_recognition:
     faceidx_to_obj_dict=dict()
     for obj in distance_dict.keys():
       distances=np.array(distance_dict[obj])
-      min_distance,min_distance_idx = distances.min(),distances.argmin()
-      if min_distance<=self.thres:
+      min_distance,min_distance_idx = distances.max(),distances.argmax()
+      if min_distance>self.thres:
         obj.find('name').text = self.faces[min_distance_idx]
         distance_tag=ET.Element("distance")
         distance_tag.text="{:.2f}".format(min_distance)
@@ -78,42 +85,43 @@ class face_recognition:
     return faceidx_to_obj_dict
 
 
-  def assign_face_label(self,obj):
-      
-      # find min and argmin
-      min_distance,min_distance_idx = self.distance_dict[obj].min(),self.distance_dict[obj].argmin()
-      # base condition
-      if min_distance>=self.thres:
-        # print("end");
-        return;
-      if min_distance_idx not in self.faceidx_to_obj_dict:
-        self.faceidx_to_obj_dict[min_distance_idx]=(obj,min_distance)  # stores obj and distance
-      else:
-
-        if(min_distance>self.faceidx_to_obj_dict[min_distance_idx][1]):
-          self.distance_dict[obj][min_distance_idx]=self.model_config.large_distance
-          self.assign_face_label(obj)
-        else:
-          temp_obj,temp_min_distance=self.faceidx_to_obj_dict[min_distance_idx]
-          self.faceidx_to_obj_dict[min_distance_idx]=(obj,min_distance)  # stores obj and distance
-          self.distance_dict[temp_obj][min_distance_idx]=self.model_config.large_distance
-          self.assign_face_label(temp_obj)
 
 
   def no_repeat_allowed_face_recognition(self,distance_dict):
     
-    self.faceidx_to_obj_dict=dict()
+    def assign_face_label(obj):
+        
+        # find min and argmin
+        min_distance,min_distance_idx = distance_dict[obj].max(),distance_dict[obj].argmax()
+        # base condition
+        if min_distance<self.thres:
+          # print("end");
+          return;
+        elif min_distance_idx not in faceidx_to_obj_dict:
+          faceidx_to_obj_dict[min_distance_idx]=(obj,min_distance)  # stores obj and distance
+        else:
+
+          if(min_distance<faceidx_to_obj_dict[min_distance_idx][1]): # current is less matching
+            distance_dict[obj][min_distance_idx]=self.model_config.large_distance
+            assign_face_label(obj)
+          else: # current is more matching
+            temp_obj,temp_min_distance=faceidx_to_obj_dict[min_distance_idx]
+            faceidx_to_obj_dict[min_distance_idx]=(obj,min_distance)  # stores obj and distance
+            distance_dict[temp_obj][min_distance_idx]=self.model_config.large_distance
+            assign_face_label(temp_obj)
+    
+    faceidx_to_obj_dict=dict()
     for obj in distance_dict.keys():
-      self.assign_face_label(obj)
+      assign_face_label(obj)
       
-    for idx,(obj,distance) in self.faceidx_to_obj_dict.items():
+    for idx,(obj,distance) in faceidx_to_obj_dict.items():
       obj.find('name').text = self.faces[idx]
       distance_tag=ET.Element("distance")
       distance_tag.text="{:.2f}".format(distance)
       obj.append(distance_tag)
       # print(obj.find("distance").text)
     
-    return self.faceidx_to_obj_dict
+    return faceidx_to_obj_dict
     
 
   def forward_pass(self,img,tree,mode="repeat"):

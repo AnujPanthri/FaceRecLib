@@ -11,9 +11,10 @@ import uuid
 from flask import render_template,request,send_from_directory,session,jsonify,json
 from app import helper
 from PIL import ImageOps
-from app.helper import generate_random_id,access_database_as_admin,image_to_base64,base64_to_image,add_row_user_table,read_row_user_table,read_user_table,remove_person_from_user_table
+from app.helper import generate_random_id,image_to_base64,base64_to_image
 from app.demo import bp
 import copy
+from config import demo_config
 
 
 
@@ -166,27 +167,43 @@ def face_recognition():
     return jsonify({"message":"success",'image':pred_img})  
 
 
+def get_default_settings():
+    settings_dict={}
+    #p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode
+        
+    #p_thres,nms_thres
+    settings_dict['p_thres']=face_detector.model_config.p_thres
+    settings_dict['nms_thres']=face_detector.model_config.nms_thres
+    # d_thres
+    settings_dict['d_thres']=face_recognizer.model_config.d_thres
+
+    #small_size,large_size,a_thres,db_mode,fr_mode
+    settings_dict.update(demo_config)
+    
+    return settings_dict
+
 @bp.route("/get_settings/",methods=['GET'])
 def get_settings():
     session.permanent=True
     if "demo" not in session:
-        dataBase = access_database_as_admin()
-        cursor=dataBase.cursor()
-        cursor.execute("select * from default_settings where page='demo'")
-
+        
         session["demo"]={'settings':dict()}
-        session["demo"]['settings']= dict(zip(cursor.column_names, cursor.fetchone()))
-        # Disconnecting from the server
-        dataBase.commit()
-        dataBase.close()
+        session["demo"]['settings']=get_default_settings()
+        
+
+        
+        
+        
 
     return session["demo"]['settings']
 
 @bp.route("/reset_settings/",methods=['GET'])
 def reset_settings():
     del session["demo"]
+    session["demo"]={'settings':dict()}
+    session["demo"]['settings']=get_default_settings()
 
-    return {"message":"success"}
+    return {"message":"success",**session["demo"]['settings']}
 
 @bp.route("/update_settings/",methods=['POST'])
 def update_settings():

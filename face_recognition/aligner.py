@@ -10,7 +10,7 @@ import shutil
 
 
 class aligner:
-    def __init__(self,min_aligner_confidence):        
+    def __init__(self,min_aligner_confidence=0.5):        
         mp_face_mesh = mp.solutions.face_mesh
 
         self.face_mesh_images = mp_face_mesh.FaceMesh(static_image_mode=True, max_num_faces=1,

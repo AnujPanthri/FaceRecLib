@@ -432,6 +432,22 @@ function hide_settings(){
 }
 
 
+function update_settings_html(res){
+    p_thres.value=p_thresValue.innerText=res['p_thres'];
+    nms_thres.value=nms_thresValue.innerText=res['nms_thres'];
+    
+    small_size.value=small_sizeValue.innerText=res['small_size'];
+    large_size.value=large_sizeValue.innerText=res['large_size'];
+
+    d_thres.value=d_thresValue.innerText=res['d_thres'];
+    a_thres.value=a_thresValue.innerText=res['a_thres'];
+
+    db_mode.value=res['db_mode'];
+    fr_mode.value=res['fr_mode'];
+    // console.log(res['db_mode'],res['fr_mode']);
+}
+
+
 
 function get_settings(){
     fetch("get_settings/",{
@@ -440,19 +456,7 @@ function get_settings(){
         return response.json();
     }).then(function(res){
         console.log(res);
-
-        p_thres.value=p_thresValue.innerText=res['p_thres'];
-        nms_thres.value=nms_thresValue.innerText=res['nms_thres'];
-        
-        small_size.value=small_sizeValue.innerText=res['small_size'];
-        large_size.value=large_sizeValue.innerText=res['large_size'];
-
-        d_thres.value=d_thresValue.innerText=res['d_thres'];
-        a_thres.value=a_thresValue.innerText=res['a_thres'];
-
-        db_mode.value=res['db_mode'];
-        fr_mode.value=res['fr_mode'];
-        console.log(res['db_mode'],res['fr_mode']);
+        update_settings_html(res);
     })
 }
 get_settings();
@@ -492,7 +496,7 @@ function reset_settings(){
     }).then(function(res){
         console.log(res);
         if(res['message']=='success')
-            get_settings();
+            update_settings_html(res);
     }
     );
 }

@@ -1,4 +1,4 @@
-from flask import Flask,session
+from flask import Flask,session,render_template,url_for,json
 from datetime import timedelta
 
 from face_detection import inference as fd
@@ -11,14 +11,17 @@ from face_recognition import helper as fr_helper
 
 face_detector=fd.face_detection("face_detection/Models/v1")
 face_detector.square_preprocessing=fd.square_pad()
-face_recognizer=fr.face_recognition("face_recognition/Models/v1")
-aligner_obj=aligner(min_aligner_confidence=0.6)
+# face_recognizer=fr.face_recognition("face_recognition/Models/v1")
+# face_recognizer=fr.face_recognition("face_recognition/Models/mobilenet_basic_lfw")
+face_recognizer=fr.face_recognition("face_recognition/Models/keras_mobilenet_emore_adamw")
+aligner_obj=aligner()
 
-image_size=544
-p_thres=0.7
-nms_thres=0.3
-batch_size=1
-face_detector.set_mode(p_thres,nms_thres,mode="sized",image_size=image_size,batch_size=batch_size)
+# image_size=544
+# p_thres=0.7
+# nms_thres=0.3
+# batch_size=1
+# face_detector.set_mode(p_thres,nms_thres,mode="sized",image_size=image_size,batch_size=batch_size)
+face_detector.mode="sized"
 
 
 # def create_app(config_class=Config):
@@ -51,5 +54,13 @@ def create_app():
     @app.route("/test/")
     def test_page():
         return "<h1>This is a test page</h1>"
+    
+    @app.route("/api/docs/json/",methods=["GET"])
+    def get_docs_json():
+        return json.load(open("app/static/docs/data.json","r"))
+
+    @app.route("/api/docs/")
+    def api_docs():
+        return render_template("docs/index.html")
 
     return app

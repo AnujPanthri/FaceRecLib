@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import copy
+import importlib
 
 
 
@@ -96,7 +97,11 @@ class face_detection:
         self.modes_available=["tiled","sized"]
         self.square_preprocessing=square_crop
 
-    def invoke_model(self,img,p=0.2,iou_threshold=0.3,batch_size=4):
+        config_file_path='.'.join(model_path.split("/"))+".config"
+        # print(config_file_path)
+        self.model_config= importlib.import_module(config_file_path)
+
+    def invoke_model(self,img,p,iou_threshold,batch_size):
         all_objs_found=[]
         
         for i in range(math.ceil(img.shape[0]/batch_size)):
@@ -151,7 +156,7 @@ class face_detection:
         return all_objs_found_joined
 
 
-    def set_mode(self,p_thres,nms_thres,batch_size=4,mode="tiled",**kwargs):
+    def set_mode(self,p_thres,nms_thres,batch_size=1,mode="sized",**kwargs):
         # mode : tiled or sized
         
         self.p_thres=p_thres

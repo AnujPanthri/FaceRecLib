@@ -1,17 +1,20 @@
-import os
 
+demo_config={
 
-# face detector
-p_thres=0.7
-nms_thres=0.3
-small_size=544
-large_size=2080
+    "small_size":256,
+    "large_size":1024,
+    
+    "db_mode":'small',  # 'small','large','both'
+    "fr_mode":'large',   # 'small','large','both'
 
-# face aligner
-thres=0.6
+    "a_thres":0.6
+}
+user_config={
+    "small_size":544,
+    "large_size":2080,
+    
+    "db_mode":'small',  # 'small','large','both'
+    "fr_mode":'both',   # 'small','large','both'
 
-# face recognizer
-thres=0.5   # distance is almost 0 to 1
-
-# class Config:
-#     SECRET_KEY=os.environ.get("SECRET_KEY")
+    "a_thres":0.6
+}

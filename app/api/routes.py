@@ -6,9 +6,10 @@ import numpy as np
 
 from app import face_detector,face_recognizer,aligner_obj,fd_get_crops,fr_helper
 
+from config import demo_config
 
 
-#################################################################################################################################################
+##################################################################settings#######################################################################
 
 def set_image_size(settings,mode):
     if mode=='small':
@@ -20,11 +21,22 @@ def set_image_size(settings,mode):
     else:
         raise("Error")
     
+def get_default_settings():
+    settings_dict={}
+    #p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode
+        
+    #p_thres,nms_thres
+    settings_dict['p_thres']=face_detector.model_config.p_thres
+    settings_dict['nms_thres']=face_detector.model_config.nms_thres
+    # d_thres
+    settings_dict['d_thres']=face_recognizer.model_config.d_thres
 
-
-
-def load_settings(username):
+    #small_size,large_size,a_thres,db_mode,fr_mode
+    settings_dict.update(demo_config)
     
+    return settings_dict
+
+def get_settings(username):
     dataBase = access_database_as_admin()
     cursor=dataBase.cursor()
     cursor.execute("select * from user_settings where username=%s",[username])
@@ -43,6 +55,10 @@ def load_settings(username):
     # Disconnecting from the server
     dataBase.commit()
     dataBase.close()
+    return settings
+
+def load_settings(settings):
+    
 
     # set face detector settings
     face_detector.p_thres=settings['p_thres']
@@ -57,7 +73,7 @@ def load_settings(username):
 
     return settings
 
-#################################################################################################################################################
+############################################################settings_end#########################################################################
 
 def is_auth(func):
     def wrapper_func(*args,**kwargs):
@@ -78,37 +94,7 @@ def is_auth(func):
     return wrapper_func
 
 
-@bp.route("/get_crops/",methods=["POST"])
-@is_auth
-def get_crops(username):
-
-    settings=load_settings(username)
-    set_image_size(settings,settings["db_mode"])
-    if "image_size" in request.form: face_detector.image_size=list(map(lambda x:int(x),request.form["image_size"].split(",")))
-    if "thres" in request.form: face_recognizer.thres=request.form["thres"]
-    print(face_detector.image_size)
-
-    file = request.files['image']
-    
-    image=Image.open(file.stream).convert("RGB")
-    image = ImageOps.exif_transpose(image)
-    image=np.array(image)
-    print(image.shape)
-
-    image,objs_found=face_detector.predict(image)
-    print(objs_found)
-      
-    all_aligned_crops=fd_get_crops(image,objs_found,aligner_obj,resize=(face_recognizer.model_config.input_size,face_recognizer.model_config.input_size))
-    all_aligned_crops_base64=[]
-
-    for i,aligned_crop in enumerate(all_aligned_crops):
-        all_aligned_crops_base64.append(image_to_base64(aligned_crop))
-
-    return jsonify({"message":"success","crops":all_aligned_crops_base64})
-
-
-
-
+#################################################################change_db############################################################################
 @bp.route("/add_person/",methods=["POST"])
 @is_auth
 def add_person(username):
@@ -156,15 +142,60 @@ def remove_person(username):
     return jsonify({"message":"success"})
     # return jsonify({"message":"success",'image':pred_img})
 
+#################################################################change_db_end############################################################################
+
+@bp.route("/get_crops/",methods=["POST"])
+@is_auth
+def get_crops(username):
+
+    settings=get_settings(username)
+
+    for setting in settings.keys():
+        if setting in request.form:
+            settings[setting]=request.form[setting]
+
+    load_settings(settings)
+
+    set_image_size(settings,settings["db_mode"])
+    if "image_size" in request.form: face_detector.image_size=list(map(lambda x:int(x),request.form["image_size"].split(",")))
+    print(face_detector.image_size)
+
+    file = request.files['image']
+    
+    image=Image.open(file.stream).convert("RGB")
+    image = ImageOps.exif_transpose(image)
+    image=np.array(image)
+    print(image.shape)
+
+    image,objs_found=face_detector.predict(image)
+    print(objs_found)
+      
+    all_aligned_crops=fd_get_crops(image,objs_found,aligner_obj,resize=(face_recognizer.model_config.input_size,face_recognizer.model_config.input_size))
+    all_aligned_crops_base64=[]
+
+    for i,aligned_crop in enumerate(all_aligned_crops):
+        all_aligned_crops_base64.append(image_to_base64(aligned_crop))
+
+    return jsonify({"message":"success","crops":all_aligned_crops_base64})
+
+
+
+
+
 
 @bp.route("/face_recognize/",methods=["POST"])
 @is_auth
 def face_recognition(username):
 
-    settings=load_settings(username)
+    settings=get_settings(username)
+
+    for setting in settings.keys():
+        if setting in request.form:
+            settings[setting]=request.form[setting]
+
+    load_settings(settings)
     set_image_size(settings,settings["fr_mode"])
     if "image_size" in request.form: face_detector.image_size=list(map(lambda x:int(x),request.form["image_size"].split(",")))
-    if "d_thres" in request.form: face_recognizer.thres=request.form["d_thres"]
     print(face_detector.image_size)
 
     # print(request.form)
@@ -183,16 +214,24 @@ def face_recognition(username):
     for i in range(len(faces)):
         print(faces[i],":",db_faces_features[i].shape)
     
-    # face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="avg",recognition_mode="repeat")
-    face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="best",recognition_mode="repeat")
+    
     img,objs_found=face_detector.predict(image)
     h,w=img.shape[:2]
     tree=fr_helper.objs_found_to_xml("test.jpg",w,h,objs_found)
-    tree=face_recognizer.predict(img,tree)
+
+    # face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="avg",recognition_mode="repeat")
+    face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="best",recognition_mode="repeat")
+
+    if len(faces)>0:
+        tree=face_recognizer.predict(img,tree)
+        
+        
+    # print(objs_found[0])
+    
+
     pred_img=fr_helper.show_pred_image(tree,img)
     pred_img=image_to_base64(pred_img)
     objs_found=fr_helper.xml_to_objs_found(tree) # everything is okay till here
-    # print(objs_found[0])
     
     objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
     # print(objs_found[0])

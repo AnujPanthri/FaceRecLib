@@ -44,25 +44,25 @@ cursorObject.execute("""create table if not exists session_table(
     );
 """)
 
-cursorObject.execute("""drop table if exists default_settings""")
-cursorObject.execute("""create table if not exists default_settings(
-    page varchar(30) not null unique,
-    p_thres float not null,
-    nms_thres float not null,
-    small_size integer not null default 544,
-    large_size integer not null default 2080,
-    d_thres float not null,
-    a_thres float not null,
-    db_mode enum('small','large','both') not null,
-    fr_mode enum('small','large','both') not null
-    );
-""")
+# cursorObject.execute("""drop table if exists default_settings""")
+# cursorObject.execute("""create table if not exists default_settings(
+#     page varchar(30) not null unique,
+#     p_thres float not null,
+#     nms_thres float not null,
+#     small_size integer not null default 544,
+#     large_size integer not null default 2080,
+#     d_thres float not null,
+#     a_thres float not null,
+#     db_mode enum('small','large','both') not null,
+#     fr_mode enum('small','large','both') not null
+#     );
+# """)
 
-cursorObject.execute("""insert into default_settings(page,p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode) values(
-                'demo',0.5,0.3,256,1024,0.5,0.6,'small','large');""")
+# cursorObject.execute("""insert into default_settings(page,p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode) values(
+#                 'demo',0.5,0.3,256,1024,0.5,0.6,'small','large');""")
 
-cursorObject.execute("""insert into default_settings(page,p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode) values(
-                'user',0.7,0.3,544,2080,0.5,0.6,'small','both');""")
+# cursorObject.execute("""insert into default_settings(page,p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode) values(
+#                 'user',0.7,0.3,544,2080,0.5,0.6,'small','both');""")
 
 
 # cursorObject.execute("""drop table if exists user_settings""")

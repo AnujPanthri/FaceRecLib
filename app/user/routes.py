@@ -10,6 +10,7 @@ from PIL import Image
 import os
 import numpy as np
 from app import face_detector,face_recognizer,aligner_obj,fd_get_crops,fr_helper,fd,fr
+from config import user_config
 
 
 
@@ -213,6 +214,22 @@ def get_image_size(mode):
     
 
 
+def get_default_settings():
+    settings_dict={}
+    #p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode
+        
+    #p_thres,nms_thres
+    settings_dict['p_thres']=face_detector.model_config.p_thres
+    settings_dict['nms_thres']=face_detector.model_config.nms_thres
+    # d_thres
+    settings_dict['d_thres']=face_recognizer.model_config.d_thres
+
+    #small_size,large_size,a_thres,db_mode,fr_mode
+    settings_dict.update(user_config)
+    
+    return settings_dict
+
+
 @bp.route("/get_settings/",methods=['GET'])
 def get_settings():
     global settings
@@ -225,13 +242,15 @@ def get_settings():
 
     if settings is None:
         # get default settings and insert a row in user_settings
-        cursor.execute("select p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode from default_settings where page='user'")
-        settings=cursor.fetchone()
-        columns=cursor.column_names
-        cursor.execute(f"insert into user_settings(username,{','.join(columns)}) values(%s,{','.join(map(lambda x:'%s',columns))})",(session['user']['username'],)+settings)
+        
+        settings=get_default_settings()
+        columns=["p_thres","nms_thres","small_size","large_size","d_thres","a_thres","db_mode","fr_mode"]
+        
+        cursor.execute(f"insert into user_settings(username,{','.join(columns)}) values(%s,{','.join(map(lambda x:'%s',columns))})",[session['user']['username']]+[settings[col] for col in columns])
     
+    else:
+        settings= dict(zip(columns, settings))
     
-    settings= dict(zip(columns, settings))
     # Disconnecting from the server
     dataBase.commit()
     dataBase.close()
@@ -240,24 +259,29 @@ def get_settings():
 
     return settings
 
+
 @bp.route("/reset_settings/",methods=['GET'])
 def reset_settings():
+    global settings
+
     dataBase = access_database_as_admin()
     cursor=dataBase.cursor()
     
-    cursor.execute("select p_thres,nms_thres,small_size,large_size,d_thres,a_thres,db_mode,fr_mode from default_settings where page='user'")
-    settings=cursor.fetchone()
-    columns=cursor.column_names
+    
+    settings=get_default_settings()
+    columns=["p_thres","nms_thres","small_size","large_size","d_thres","a_thres","db_mode","fr_mode"]
+    
+
     print(settings)
-    cursor.execute(f"update user_settings set {','.join(list(map(lambda x:x+'=%s',columns)))} where username=%s;",settings+(session['user']['username'],))
+    cursor.execute(f"update user_settings set {','.join(list(map(lambda x:x+'=%s',columns)))} where username=%s;",[settings[col] for col in columns]+[session['user']['username']])
     
     # Disconnecting from the server
     dataBase.commit()
     dataBase.close()
     
-    settings=dict()
+    
 
-    return {"message":"success"}
+    return {"message":"success",**settings}
 
 @bp.route("/update_settings/",methods=['POST'])
 def update_settings():
