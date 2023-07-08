@@ -23,7 +23,7 @@
         "method":"POST",
         "summary":"This route is used to do face recognition based on the images in the db.",
         "request_params":[
-            {"name":"image","summary":"Image to get face crops from.","type":"File","required":"*"},
+            {"name":"image","summary":"Image to do face recognition on.","type":"File","required":"*"},
             {"name":"access_key","summary":"access key related with your account.","type":"json","required":"*"},
             {"name":"settings-parameter","summary":"pass any settings for example \"d_thres\":0.3 .","type":"json","required":""}
         ],
