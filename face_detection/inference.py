@@ -220,7 +220,7 @@ class face_detection:
         elif (type(img)!=type(np.zeros([]))):
             raise TypeError(f"Inappropriate type of image={type(img)}")
         
-        if img.shape[0]!=img.shape[1]:  img=self.square_preprocessing(img)
+        img=self.square_preprocessing(img)
 
         if  not hasattr(self,'mode'): raise ValueError(f"First call set_mode function to set mode using one of the following mode :{self.modes_available}")
 

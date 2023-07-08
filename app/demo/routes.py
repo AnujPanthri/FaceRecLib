@@ -157,14 +157,14 @@ def face_recognition():
     face_detector.image_size=get_image_size(session["demo"]['settings']['fr_mode'])
     
     _,objs_found=face_detector.predict(image)
-
     objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
     h,w=image.shape[:2]
     
     tree=fr_helper.objs_found_to_xml("test.jpg",w,h,objs_found)
+
     tree=face_recognizer.predict(image,tree)
+
     pred_img=fr_helper.show_pred_image(tree,image)
-    
     pred_img=helper.image_to_base64(pred_img)
 
     return jsonify({"message":"success",'image':pred_img})  
