@@ -427,10 +427,17 @@ function remove_person(person){
 function show_settings(){
     document.querySelector('#settings_menu').style.display='block';
     document.querySelector('#container').classList.add("blur");
+    // add click outside to close settings
+    document.addEventListener("click",close_settings);
+}
+function close_settings(event){
+    if ((!document.querySelector('#settings_menu').contains(event.target))&& (!event.target.classList.contains("settings_btn")))
+        hide_settings();
 }
 function hide_settings(){
     document.querySelector('#settings_menu').style.display='none';
     document.querySelector('#container').classList.remove("blur");
+    document.removeEventListener("click",close_settings);
 }
 
 
