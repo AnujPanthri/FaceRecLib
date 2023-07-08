@@ -53,6 +53,15 @@ def xml_to_objs_found(tree):
 
 
 def objs_found_to_xml(test_img,w,h,objs_found):
+
+    def rescale(obj_found,w,h):
+        # xywh
+        obj_found[0]*=w
+        obj_found[1]*=h
+        obj_found[2]*=w
+        obj_found[3]*=h
+        return obj_found
+
     root=ET.Element("annotation")
 
     filename_tag=ET.Element("filename")
@@ -80,7 +89,7 @@ def objs_found_to_xml(test_img,w,h,objs_found):
 
     # add all objects
     for obj_found in objs_found:
-        obj_found['xywh']=np.array(obj_found['xywh'])*w
+        obj_found['xywh']=rescale(obj_found['xywh'],w,h)
 
         obj_tag=ET.Element("object")
         name_tag=ET.Element("name")
@@ -97,8 +106,6 @@ def objs_found_to_xml(test_img,w,h,objs_found):
         ymax_tag=ET.Element("ymax")
         ymax_tag.text=str(int(obj_found['xywh'][1]+obj_found['xywh'][3]))
 
-        obj_found['xywh']=np.array(obj_found['xywh'])/w
-
         bndbox_tag.append(xmin_tag)
         bndbox_tag.append(ymin_tag)
         bndbox_tag.append(xmax_tag)
@@ -113,3 +120,6 @@ def objs_found_to_xml(test_img,w,h,objs_found):
     #     xml.write(f)
 
     return xml
+
+
+

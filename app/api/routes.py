@@ -224,26 +224,25 @@ def face_recognition(username):
         print(faces[i],":",db_faces_features[i].shape)
     
     
-    img,objs_found=face_detector.predict(image)
-    h,w=img.shape[:2]
+    _,objs_found=face_detector.predict(image)
+    objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
+    h,w=image.shape[:2]
+
     tree=fr_helper.objs_found_to_xml("test.jpg",w,h,objs_found)
 
     # face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="avg",recognition_mode="repeat")
     face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="best",recognition_mode="repeat")
 
     if len(faces)>0:
-        tree=face_recognizer.predict(img,tree)
+        tree=face_recognizer.predict(image,tree)
         
         
-    # print(objs_found[0])
-    
 
-    pred_img=fr_helper.show_pred_image(tree,img)
+    pred_img=fr_helper.show_pred_image(tree,image)
     pred_img=image_to_base64(pred_img)
     objs_found=fr_helper.xml_to_objs_found(tree) # everything is okay till here
     
-    objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
-    # print(objs_found[0])
+    
 
     all_crops=fd_get_crops(image,objs_found)
     all_crops_base64=[]
