@@ -97,9 +97,18 @@ def show_objects(img,objs_found,return_img=False):
 
 
 def pred_image(img,objs_found,font_scale=2,thickness=4):
+  def rescale(obj_found,w,h):
+    # xywh
+    obj_found[0]*=w
+    obj_found[1]*=h
+    obj_found[2]*=w
+    obj_found[3]*=h
+    return obj_found
+
   for i in range(len(objs_found)):  
     p=objs_found[i]['p']
-    obj=np.array(objs_found[i]['xywh'])*img.shape[0]
+    # obj=np.array(objs_found[i]['xywh'])*img.shape[0]
+    obj=rescale(objs_found[i]['xywh'],img.shape[1],img.shape[0])
     obj_name=objs_found[i]['class']
     
     img=cv2.rectangle(img,(int(obj[0]),int(obj[1])),(int(obj[0]+obj[2]),int(obj[1]+obj[3])),(class_colors[obj_name]*255),thickness)
