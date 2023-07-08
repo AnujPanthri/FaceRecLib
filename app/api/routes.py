@@ -95,6 +95,15 @@ def is_auth(func):
 
 
 #################################################################change_db############################################################################
+#to resolve cors error
+@bp.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    return response
+
+
+
 @bp.route("/add_person/",methods=["POST"])
 @is_auth
 def add_person(username):
