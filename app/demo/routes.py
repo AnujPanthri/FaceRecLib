@@ -87,9 +87,9 @@ def set_crops():
     face_detector.image_size=get_image_size(session["demo"]['settings']['db_mode'])
     print(face_detector.image_size)
 
-    image,objs_found=face_detector.predict(image)
-    print(face_detector.image_size)
-      
+    _,objs_found=face_detector.predict(image)
+    objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
+    print(image.shape)
     all_aligned_crops=fd_get_crops(image,objs_found,aligner_obj,resize=(face_recognizer.model_config.input_size,face_recognizer.model_config.input_size))
     all_aligned_crops_base64=[]
     all_aligned_crops_names=[]
@@ -156,11 +156,14 @@ def face_recognition():
     
     face_detector.image_size=get_image_size(session["demo"]['settings']['fr_mode'])
     
-    img,objs_found=face_detector.predict(image)
-    h,w=img.shape[:2]
+    _,objs_found=face_detector.predict(image)
+
+    objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
+    h,w=image.shape[:2]
+    
     tree=fr_helper.objs_found_to_xml("test.jpg",w,h,objs_found)
-    tree=face_recognizer.predict(img,tree)
-    pred_img=fr_helper.show_pred_image(tree,img)
+    tree=face_recognizer.predict(image,tree)
+    pred_img=fr_helper.show_pred_image(tree,image)
     
     pred_img=helper.image_to_base64(pred_img)
 

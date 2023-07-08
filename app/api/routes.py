@@ -176,8 +176,9 @@ def get_crops(username):
     image=np.array(image)
     print(image.shape)
 
-    image,objs_found=face_detector.predict(image)
-    print(objs_found)
+    _,objs_found=face_detector.predict(image)
+    # print(objs_found)
+    objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
       
     all_aligned_crops=fd_get_crops(image,objs_found,aligner_obj,resize=(face_recognizer.model_config.input_size,face_recognizer.model_config.input_size))
     all_aligned_crops_base64=[]

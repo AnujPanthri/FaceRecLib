@@ -326,8 +326,10 @@ def get_crops():
     print(image.shape)
     # do your deep learning work
     face_detector.image_size=get_image_size(settings['db_mode'])
-    image,objs_found=face_detector.predict(image)
-    print(objs_found)
+    _,objs_found=face_detector.predict(image)
+    
+    objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
+    print(image.shape)
       
     all_aligned_crops=fd_get_crops(image,objs_found,aligner_obj,resize=(face_recognizer.model_config.input_size,face_recognizer.model_config.input_size))
     all_aligned_crops_base64=[]
@@ -414,12 +416,18 @@ def face_recognition():
     
     # face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="avg",recognition_mode="repeat")
     face_recognizer.set_face_db_and_mode(faces=faces,db_faces_features=db_faces_features,distance_mode="best",recognition_mode="repeat")
-    img,objs_found=face_detector.predict(image)
-    h,w=img.shape[:2]
+    
+    _,objs_found=face_detector.predict(image)
+
+    objs_found=face_detector.square_preprocessing.rescale(objs_found)   #rescale coordinates to original image's resolution
+    h,w=image.shape[:2]
+
     tree=fr_helper.objs_found_to_xml("test.jpg",w,h,objs_found)
-    tree=face_recognizer.predict(img,tree)
-    pred_img=fr_helper.show_pred_image(tree,img)
+    tree=face_recognizer.predict(image,tree)
+    pred_img=fr_helper.show_pred_image(tree,image)
+
     pred_img=image_to_base64(pred_img)
+
     objs_found=fr_helper.xml_to_objs_found(tree)
 
 

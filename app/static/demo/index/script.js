@@ -119,7 +119,7 @@ database_input.addEventListener("change", function(e){
                     var img_container_tag=document.createElement("div");
                     var img_remove_tag=document.createElement("p");
                     var img_tag=document.createElement("img");
-                    img_tag.src="data:image/jpeg;base64,"+response['image'].split('\'')[1];
+                    img_tag.src="data:image/jpeg;base64,"+response['image'];
                     img_tag.setAttribute("class","db_image");
                     img_remove_tag.setAttribute("class","close_text");
                     img_remove_tag.innerHTML="✖";
@@ -165,7 +165,7 @@ database_input.addEventListener("change", function(e){
                     {
                         var crop_container=document.querySelector("#unassigned_faces");
                         var crop_img=document.createElement("img");
-                        crop_img.src="data:image/jpeg;base64,"+response["crops"][i].split('\'')[1];
+                        crop_img.src="data:image/jpeg;base64,"+response["crops"][i];
                         crop_img.dataset.image_name=response['image_name'];
                         
                         crop_img.setAttribute("class","crop_img");
@@ -406,7 +406,7 @@ function face_recognition(elem)
         }).then(function(response){
             hide_loading_bar();
             console.log(response);
-            document.querySelector("#face_rec_image").src="data:image/jpeg;base64,"+response['image'].split('\'')[1];
+            document.querySelector("#face_rec_image").src="data:image/jpeg;base64,"+response['image'];
         })
         
         

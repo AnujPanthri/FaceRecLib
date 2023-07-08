@@ -13,7 +13,7 @@ def image_to_base64(img):
         rawBytes=io.BytesIO()
         img.save(rawBytes,"JPEG")
         rawBytes.seek(0)
-        img_base64=str(base64.b64encode(rawBytes.read()))
+        img_base64=base64.b64encode(rawBytes.read()).decode()
         return img_base64
 
 def base64_to_image(img_base64):

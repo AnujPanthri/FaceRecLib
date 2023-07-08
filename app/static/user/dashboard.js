@@ -216,7 +216,7 @@ function filterFunction() {
                       {
                           
                           var crop_img=document.createElement("img");
-                          crop_img.src="data:image/jpeg;base64,"+response["crops"][i].split('\'')[1];                          
+                          crop_img.src="data:image/jpeg;base64,"+response["crops"][i];                          
                           crop_img.setAttribute("class","crop_img");
                           // crop_img.setAttribute("id",crop_img.dataset.image_name+'\\'+crop_img.dataset.crop_name);
                           crop_img.setAttribute("draggable","true");
@@ -326,7 +326,7 @@ function face_recoginization(elem){
         }).then(function(response){
             hide_loading_bar();
             console.log(response);
-            document.querySelector("#face_recognition_image").src="data:image/jpeg;base64,"+response["pred_image"].split('\'')[1];                          
+            document.querySelector("#face_recognition_image").src="data:image/jpeg;base64,"+response["pred_image"];                          
             document.querySelector("#face_recognition_image").style.width="unset";
         })
     }
