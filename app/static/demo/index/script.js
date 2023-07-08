@@ -98,7 +98,7 @@ database_input.addEventListener("change", function(e){
         const formdata = new FormData();
         formdata.append("a",23);
         formdata.append("image",e.target.files[0]);
-        
+        show_loading_bar();
         fetch("/demo/add_crops/",
         {
             method:'POST',
@@ -114,7 +114,7 @@ database_input.addEventListener("change", function(e){
                 console.log(response);
                 if (response['message']=='successful')
                 {
-                    
+                    hide_loading_bar();
                     var images_div=document.querySelector("#db_images_bar>#db_images");
                     var img_container_tag=document.createElement("div");
                     var img_remove_tag=document.createElement("p");
@@ -397,12 +397,14 @@ function face_recognition(elem)
             return ;
         }
         // console.log(elem.files[0]);
+        show_loading_bar();
         fetch("/demo/face_recognition/",{
             method:"POST",
             body:formdata
         }).then(function(response){
             return response.json();
         }).then(function(response){
+            hide_loading_bar();
             console.log(response);
             document.querySelector("#face_rec_image").src="data:image/jpeg;base64,"+response['image'].split('\'')[1];
         })
@@ -499,4 +501,16 @@ function reset_settings(){
             update_settings_html(res);
     }
     );
+}
+
+
+
+var loader=document.querySelector(".loader");
+
+function show_loading_bar(){
+    loader.classList.remove("hidden");
+}
+
+function hide_loading_bar(){
+    loader.classList.add("hidden");
 }

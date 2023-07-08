@@ -191,7 +191,7 @@ function filterFunction() {
           
           const formdata = new FormData();
           formdata.append("image",e.target.files[0]);
-
+          show_loading_bar()
           
           fetch("get_crops/",
           {
@@ -205,6 +205,7 @@ function filterFunction() {
           ).then(
               function(response)
               {
+                  hide_loading_bar()
                   console.log(response);
                 
                   if (response['message']=='successful')
@@ -277,7 +278,7 @@ function update_db_crops(elem)
         alldata["person_name"]=document.querySelector("#database-form>.field>.person_name").value;
         alldata["remarks"]=all_remarks;
         console.log(alldata);
-
+        show_loading_bar();
         
           
           fetch("set_crops/",{
@@ -287,6 +288,7 @@ function update_db_crops(elem)
           }).then(function(response){
               return response.json();
           }).then(function(response){
+                hide_loading_bar();
                 console.log(response);
                 var person_ids=document.querySelectorAll("#db_people_table>tr>td:first-child");
                 var matching_person_id=null;
@@ -315,12 +317,14 @@ function face_recoginization(elem){
     if(elem.files[0]){
         formdata=new FormData();
         formdata.append("image",elem.files[0]);
+        show_loading_bar();
         fetch("face_recognize/",{
             method:"POST",
             body:formdata
         }).then(function(response){
             return response.json();
         }).then(function(response){
+            hide_loading_bar();
             console.log(response);
             document.querySelector("#face_recognition_image").src="data:image/jpeg;base64,"+response["pred_image"].split('\'')[1];                          
             document.querySelector("#face_recognition_image").style.width="unset";
@@ -483,4 +487,15 @@ function reset_settings(){
             update_settings_html(res);
     }
     );
+}
+
+
+var loader=document.querySelector(".loader");
+
+function show_loading_bar(){
+    loader.classList.remove("hidden");
+}
+
+function hide_loading_bar(){
+    loader.classList.add("hidden");
 }

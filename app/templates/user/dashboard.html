@@ -22,6 +22,7 @@
     {% elif data_dict['access_key']=='rejected' %}
     <p>sorry you are not given access </p>
     {% else %}
+    {% include 'loader.html' %}
     <i  class="fa-solid fa-gear settings_btn" onclick="show_settings();"></i>
     <div id="container">
         <div id="api-key">

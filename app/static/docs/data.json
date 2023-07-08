@@ -31,7 +31,7 @@
             {"name":"message","summary":"\"success\" if everything is fine.","type":"Text"},
             {"name":"pred_image","summary":"image with prediction boxes","type":"base64"},
             {"name":"person_ids","summary":"list of person_id(\"face\" if face is not found)","type":"list of string"},
-            {"name":"crops","summary":"return list of crop images.","type":"list of base64 values"},
+            {"name":"crops","summary":"return list of cropped images.","type":"list of base64 values"},
             {"name":"objs_found","summary":"dictionary of faces found with coordinates and names .","type":"dictionary"}
         ]
     }
