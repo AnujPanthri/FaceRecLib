@@ -111,7 +111,6 @@ class face_detection:
             
             for i in range(y_pred.shape[0]):
                 objs_found=get_objects(y_pred[i],p=p)
-                objs_found=nms(objs_found,iou_threshold=iou_threshold)
                 all_objs_found.append(objs_found)
         
         return all_objs_found
@@ -149,8 +148,6 @@ class face_detection:
                 all_objs_found[i][j]['xywh']=(all_objs_found[i][j]['xywh']/(image_size*tiles)).tolist()
             all_objs_found_joined.extend(all_objs_found[i])
 
-        all_objs_found_joined=sorted(all_objs_found_joined,reverse=True,key=lambda x:x["p"]) # This was very important
-        all_objs_found_joined=nms(all_objs_found_joined,nms_thres)
         
 
         return all_objs_found_joined
@@ -241,6 +238,7 @@ class face_detection:
                 _,objs_found=self.predict_once(img)
                 all_objs_found.extend(objs_found)
             self.image_size=all_image_size
+        
         all_objs_found=sorted(all_objs_found,reverse=True,key=lambda x:x["p"]) # This was very important
         all_objs_found=nms(all_objs_found,self.nms_thres)
 

@@ -45,7 +45,6 @@ def get_objects(y_pred,p=0.5,decode_preds=True,idx=None):
       obj_details={'p':prob,'xywh':list(obj[:-1]/output_size),'class_idx':int(obj[4]),'class':obj_name}  # xywh are scaled 0 to 1
       if idx is not None:obj_details['idx']=idx
       objs_found.append(obj_details)
-  objs_found=sorted(objs_found,key=lambda x:x['p'],reverse=True)
   return objs_found
 
 def list_get_iou(bboxes1, bboxes2):
