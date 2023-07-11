@@ -12,25 +12,23 @@ def new_distance(vectors):
 path="face_recognition/Models/mobilenet_basic_lfw/mobilenet_basic_lfw_model.h5"
 # path="face_recognition/Models/keras_mobilenet_emore_adamw/keras_mobilenet_emore_adamw.h5"
 
-model2=tf.keras.models.load_model(path,compile=False)
+model=tf.keras.models.load_model(path,compile=False)
 
 x_input=tf.keras.layers.Input(shape=(112,112,3))
 x_preprocess=tf.keras.layers.Lambda(lambda x:(x - 127.5) * 0.0078125)(x_input)
-x=model2(x_preprocess,training=False)
+x=model(x_preprocess,training=False)
 x=tf.keras.layers.Lambda(lambda x:tf.math.l2_normalize(x, axis=-1))(x)
 model2=tf.keras.Model(x_input,x)
 # model2.summary()
+# model.save(path.rsplit("/",1)[0]+"/model.h5")
+# print("model save to :\t",path.rsplit("/",1)[0]+"/model.h5")
 
 
-# cv2.imread("")
-# for layer in model2.layers:
-#     if isinstance(layer,tf.keras.layers.Activation):
-#         print(layer.activation)
 
 img1=cv2.resize(cv2.imread("C:/Users/Home/Desktop/college stuff/vasu_dataset/all/priyanshi/7.jpg")[:,:,::-1],[112,112])[None]
 img2=cv2.resize(cv2.imread("C:/Users/Home/Desktop/college stuff/vasu_dataset/all/shivansh/12.jpg")[:,:,::-1],[112,112])[None]
-v1=(model2.predict(img1,verbose=0))
-v2=(model2.predict(img2,verbose=0))
+v1=(model.predict(img1,verbose=0))
+v2=(model.predict(img2,verbose=0))
 
 
 print("euclidean_distance:",euclidean_distance([v1,v2]))
@@ -39,8 +37,3 @@ if(new_distance([v1,v2])[0]>0.2830035090446472):
     print("matching")
 else:
     print("not matching")
-
-
-
-model2.save(path.rsplit("/",1)[0]+"/model.h5")
-print("model save to :\t",path.rsplit("/",1)[0]+"/model.h5")

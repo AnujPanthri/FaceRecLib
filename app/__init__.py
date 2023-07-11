@@ -9,7 +9,8 @@ from face_recognition import helper as fr_helper
 
 
 
-face_detector=fd.face_detection("face_detection/Models/v1")
+# face_detector=fd.face_detection("face_detection/Models/v1")
+face_detector=fd.face_detection("face_detection/Models/mobilenet")
 face_detector.square_preprocessing=fd.square_pad()
 # face_recognizer=fr.face_recognition("face_recognition/Models/v1")
 # face_recognizer=fr.face_recognition("face_recognition/Models/mobilenet_basic_lfw")
