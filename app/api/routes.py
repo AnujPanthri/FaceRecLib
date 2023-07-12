@@ -226,6 +226,10 @@ def face_recognition(username):
     
     objs_found=face_detector.predict(image)
     h,w=image.shape[:2]
+    all_crops=fd_get_crops(image,objs_found)
+    all_crops_base64=[]
+    for i,aligned_crop in enumerate(all_crops):
+        all_crops_base64.append(image_to_base64(aligned_crop))
 
     tree=fr_helper.objs_found_to_xml("test.jpg",w,h,objs_found)
 
@@ -240,14 +244,6 @@ def face_recognition(username):
     pred_img=fr_helper.show_pred_image(tree,image)
     pred_img=image_to_base64(pred_img)
     objs_found=fr_helper.xml_to_objs_found(tree) # everything is okay till here
-    
-    
-
-    all_crops=fd_get_crops(image,objs_found)
-    all_crops_base64=[]
-
-    for i,aligned_crop in enumerate(all_crops):
-        all_crops_base64.append(image_to_base64(aligned_crop))
     
     person_ids=[obj_found['class'] for obj_found in objs_found]
 
