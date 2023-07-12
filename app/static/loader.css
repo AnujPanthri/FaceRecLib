@@ -35,3 +35,12 @@
     display: none;
     
 }
+
+#loader_text{
+    margin: 0px;
+    z-index: 24;
+    position: absolute;
+    left:50%;
+    transform:translate(-50%,0);
+    background: transparent;
+}

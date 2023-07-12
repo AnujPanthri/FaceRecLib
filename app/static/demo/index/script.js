@@ -98,7 +98,10 @@ database_input.addEventListener("change", function(e){
         const formdata = new FormData();
         formdata.append("a",23);
         formdata.append("image",e.target.files[0]);
-        show_loading_bar();
+        
+        var loader_txt=show_loading_bar();
+        const myInterval=start_timer(loader_txt,0.2);
+        
         fetch("/demo/add_crops/",
         {
             method:'POST',
@@ -114,6 +117,7 @@ database_input.addEventListener("change", function(e){
                 console.log(response);
                 if (response['message']=='successful')
                 {
+                    clearInterval(myInterval);
                     hide_loading_bar();
                     var images_div=document.querySelector("#db_images_bar>#db_images");
                     var img_container_tag=document.createElement("div");
@@ -397,16 +401,20 @@ function face_recognition(elem)
             return ;
         }
         // console.log(elem.files[0]);
-        show_loading_bar();
+        var loader_txt=show_loading_bar();
+        const myInterval=start_timer(loader_txt,0.2);
+
         fetch("/demo/face_recognition/",{
             method:"POST",
             body:formdata
         }).then(function(response){
             return response.json();
         }).then(function(response){
-            hide_loading_bar();
             console.log(response);
             document.querySelector("#face_rec_image").src="data:image/jpeg;base64,"+response['image'];
+            
+            clearInterval(myInterval);
+            hide_loading_bar();
         })
         
         
@@ -514,8 +522,20 @@ function reset_settings(){
 
 var loader=document.querySelector(".loader");
 
+function start_timer(el,interval){
+    //interval in seconds
+    el.innerText="";
+    
+    var time=0;
+    return setInterval(function () { 
+        time+=interval;
+        el.innerText=time.toFixed(2)+"s";
+    }, interval*1000);
+}
+
 function show_loading_bar(){
     loader.classList.remove("hidden");
+    return loader.querySelector("#loader_text");
 }
 
 function hide_loading_bar(){
