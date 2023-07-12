@@ -16,7 +16,7 @@ def show_pred_image(tree,img):
 
         xmin,ymin , xmax,ymax=int(bndbox.find('xmin').text),int(bndbox.find('ymin').text),int(bndbox.find('xmax').text),int(bndbox.find('ymax').text)
 
-        if classname=="face":
+        if obj.find("distance") is None:
             color=default_color  
         else:
             color=random_color
@@ -89,22 +89,22 @@ def objs_found_to_xml(test_img,w,h,objs_found):
 
     # add all objects
     for obj_found in objs_found:
-        obj_found['xywh']=rescale(obj_found['xywh'],w,h)
+        obj_found[2:]=rescale(obj_found[2:],w,h)
 
         obj_tag=ET.Element("object")
         name_tag=ET.Element("name")
-        name_tag.text=obj_found['class']
+        name_tag.text=obj_found[1]
         obj_tag.append(name_tag)
 
         bndbox_tag=ET.Element("bndbox")
         xmin_tag=ET.Element("xmin")
-        xmin_tag.text=str(int(obj_found['xywh'][0]))
+        xmin_tag.text=str(int(obj_found[2]))
         ymin_tag=ET.Element("ymin")
-        ymin_tag.text=str(int(obj_found['xywh'][1]))
+        ymin_tag.text=str(int(obj_found[3]))
         xmax_tag=ET.Element("xmax")
-        xmax_tag.text=str(int(obj_found['xywh'][0]+obj_found['xywh'][2]))
+        xmax_tag.text=str(int(obj_found[2]+obj_found[4]))
         ymax_tag=ET.Element("ymax")
-        ymax_tag.text=str(int(obj_found['xywh'][1]+obj_found['xywh'][3]))
+        ymax_tag.text=str(int(obj_found[3]+obj_found[5]))
 
         bndbox_tag.append(xmin_tag)
         bndbox_tag.append(ymin_tag)

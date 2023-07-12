@@ -9,8 +9,8 @@ def get_crops(img,objs_found,aligner=None,resize:tuple=None):
     img_h,img_w,_=img.shape
     all_crops=[]
     for obj_found in objs_found:
-        xmin,ymin=obj_found['xywh'][0],obj_found['xywh'][1]
-        xmax,ymax=xmin+obj_found['xywh'][2],ymin+obj_found['xywh'][3]
+        xmin,ymin=obj_found[2],obj_found[3]
+        xmax,ymax=xmin+obj_found[4],ymin+obj_found[5]
         # rescale them
         xmin,ymin=int(xmin*img_w),int(ymin*img_h)
         xmax,ymax=int(xmax*img_w),int(ymax*img_h)

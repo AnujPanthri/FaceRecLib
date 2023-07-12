@@ -75,10 +75,10 @@ class square_pad:
     def rescale(self,objs_found):
         
         for i in range(len(objs_found)):
-            objs_found[i]['xywh'][0]=(objs_found[i]['xywh'][0]-self.w_added)/(1-2*self.w_added)
-            objs_found[i]['xywh'][1]=(objs_found[i]['xywh'][1]-self.h_added)/(1-2*self.h_added)
-            objs_found[i]['xywh'][2]=(objs_found[i]['xywh'][2])/(1-2*self.w_added)
-            objs_found[i]['xywh'][3]=(objs_found[i]['xywh'][3])/(1-2*self.h_added)
+            objs_found[i][2]=(objs_found[i][2]-self.w_added)/(1-2*self.w_added)
+            objs_found[i][3]=(objs_found[i][3]-self.h_added)/(1-2*self.h_added)
+            objs_found[i][4]=(objs_found[i][4])/(1-2*self.w_added)
+            objs_found[i][5]=(objs_found[i][5])/(1-2*self.h_added)
         return objs_found
 
 
@@ -208,7 +208,7 @@ class face_detection:
             resized_img=cv2.resize(img,[self.image_size,self.image_size])
             objs_found=self.invoke_model(resized_img[None,:,:,:],self.p_thres,self.nms_thres,batch_size=1)[0]
 
-        return img,objs_found
+        return objs_found
 
     def predict(self,img):
 
@@ -235,14 +235,18 @@ class face_detection:
             all_image_size=copy.deepcopy(self.image_size)
             for image_size in all_image_size:
                 self.image_size=image_size
-                _,objs_found=self.predict_once(img)
+                objs_found=self.predict_once(img)
                 all_objs_found.extend(objs_found)
             self.image_size=all_image_size
         
-        all_objs_found=sorted(all_objs_found,reverse=True,key=lambda x:x["p"]) # This was very important
+        all_objs_found=np.array(all_objs_found)
+        
         all_objs_found=nms(all_objs_found,self.nms_thres)
-
-        return img,all_objs_found
+        all_objs_found=self.square_preprocessing.rescale(all_objs_found)   #rescale coordinates to original image's resolution
+        for obj_found in all_objs_found: obj_found[1]=idx_to_class[obj_found[1]]
+        # print(all_objs_found)
+        
+        return all_objs_found
 
 
 
