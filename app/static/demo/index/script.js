@@ -91,13 +91,15 @@ function dragTouchend(e,elem) {
 
 
 var database_input=document.querySelector("#db_images_bar>.add_button>input")
-database_input.addEventListener("change", function(e){
+database_input.addEventListener("change",async function(e){
     if(e.target.files[0]){
         console.log(e.target.files[0].name);
+        var image_file=e.target.files[0];
+        image_file=await resize(image_file);
         
         const formdata = new FormData();
         formdata.append("a",23);
-        formdata.append("image",e.target.files[0]);
+        formdata.append("image",image_file);
         
         var loader_txt=show_loading_bar();
         const myInterval=start_timer(loader_txt,0.2);
@@ -363,12 +365,15 @@ function update_crops_labels(elem)
 
 
 
-function face_recognition(elem)
+async function face_recognition(elem)
 {
 
     if(elem.files[0])
     {
         // update_crops_labels(elem);  // get features of all db images from backend
+        
+        var image_file=elem.files[0];
+        image_file=await resize(image_file);
         
         var formdata=new FormData();
         var faces=document.querySelectorAll(".person>.faces>img");
@@ -393,14 +398,14 @@ function face_recognition(elem)
             }
         }
         formdata.append("db_images",JSON.stringify(faces_features));
-        formdata.append("image",elem.files[0]);
+        formdata.append("image",image_file);
         
         console.log(formdata.get("db_images"));
         if(formdata.get("db_images")=="{}"){
             console.log("Add db_images_first")
             return ;
         }
-        // console.log(elem.files[0]);
+        
         var loader_txt=show_loading_bar();
         const myInterval=start_timer(loader_txt,0.2);
 
