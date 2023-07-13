@@ -185,12 +185,14 @@ function filterFunction() {
 
 
   var database_input=document.querySelector("#database-form>.field>.add_button>input")
-  database_input.addEventListener("change", function(e){
+  database_input.addEventListener("change",async function(e){
       if(e.target.files[0]){
           console.log(e.target.files[0].name);
+          var image_file=e.target.files[0];
+          image_file=await resize(image_file);
           
           const formdata = new FormData();
-          formdata.append("image",e.target.files[0]);
+          formdata.append("image",image_file);
           
           var loader_txt=show_loading_bar();
           const myInterval=start_timer(loader_txt,0.2);
@@ -319,10 +321,14 @@ function update_db_crops(elem)
       
   }
 
-function face_recoginization(elem){
+async function face_recoginization(elem){
     if(elem.files[0]){
+
+        var image_file=elem.files[0];
+        image_file=await resize(image_file);
+
         formdata=new FormData();
-        formdata.append("image",elem.files[0]);
+        formdata.append("image",image_file);
         
         var loader_txt=show_loading_bar();
         const myInterval=start_timer(loader_txt,0.2);
