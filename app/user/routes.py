@@ -419,8 +419,8 @@ def face_recognition():
     h,w=image.shape[:2]
 
     tree=fr_helper.objs_found_to_xml("test.jpg",w,h,objs_found)
-    
-    tree=face_recognizer.predict(image,tree)
+    if len(faces)>0:
+        tree=face_recognizer.predict(image,tree)
     
     pred_img=fr_helper.show_pred_image(tree,image)
     pred_img=image_to_base64(pred_img)
