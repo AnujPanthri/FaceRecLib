@@ -18,7 +18,7 @@ class yolo_reshape(tf.keras.layers.Layer):
     return tf.reshape(output_layer,[shape[0],shape[1],shape[2],self.num_anchors,self.last_item])
   
   def compute_output_shape(self, input_shape):
-    return (input_shape[0],input_shape[1],input_shape[2],num_anchors,self.last_item, self.num_anchors,self.last_item)
+    return (input_shape[0],input_shape[1],input_shape[2],self.num_anchors,self.last_item)
 
   
   def get_config(self):
