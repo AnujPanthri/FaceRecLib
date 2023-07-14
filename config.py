@@ -5,7 +5,7 @@ demo_config={
     "large_size":1024,
     
     "db_mode":'small',  # 'small','large','both'
-    "fr_mode":'large',   # 'small','large','both'
+    "fr_mode":'both',   # 'small','large','both'
 
     "a_thres":0.6
 }
