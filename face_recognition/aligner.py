@@ -9,72 +9,105 @@ import shutil
 
 
 
-class aligner:
-    def __init__(self,min_aligner_confidence=0.5):        
-        mp_face_mesh = mp.solutions.face_mesh
+class Aligner(mp.solutions.face_mesh.FaceMesh):
+  """Inherits from MediaPipe Face Mesh."""
 
-        self.face_mesh_images = mp_face_mesh.FaceMesh(static_image_mode=True, max_num_faces=1,
-                                                min_detection_confidence=min_aligner_confidence)
+  def __init__(
+    self,
+    static_image_mode: bool = True,
+    max_num_faces: int = 1,
+    refine_landmarks: bool = False,
+    min_detection_confidence: float = 0.5,
+    min_tracking_confidence: float = 0.5
+  ):
+    """Initializes a Image Aligner object.
 
-        mp_drawing = mp.solutions.drawing_utils
-        mp_drawing_styles = mp.solutions.drawing_styles
-        LEFT_EYE_INDEXES = list(set(itertools.chain(*mp_face_mesh.FACEMESH_LEFT_EYE)))
-        RIGHT_EYE_INDEXES = list(set(itertools.chain(*mp_face_mesh.FACEMESH_RIGHT_EYE)))
-        
-        self.LEFT_EYE_INDEX=LEFT_EYE_INDEXES[7]  # eye point index
-        self.RIGHT_EYE_INDEX=RIGHT_EYE_INDEXES[4]  # eye point index
+    Unlike MediaPipe Face Mesh we set `static_image_mode` to `True` as we only
+    require image manipulation.
 
-    def align_image(self,img):
-        
-        # start work
-        face_mesh_results = self.face_mesh_images.process(img)
-        if face_mesh_results.multi_face_landmarks!=None:
-            face_landmarks=face_mesh_results.multi_face_landmarks[0]
+    Args:
+      static_image_mode: Whether to treat the input images as a batch of static
+        and possibly unrelated images, or a video stream.
+      max_num_faces: Maximum number of faces to detect.
+      refine_landmarks: Whether to further refine the landmark coordinates
+        around the eyes and lips, and output additional landmarks around the
+        irises. Default to False.
+      min_detection_confidence: Minimum confidence value ([0.0, 1.0]) for face
+        detection to be considered successful.
+      min_tracking_confidence: Minimum confidence value ([0.0, 1.0]) for the
+        face landmarks to be considered tracked successfully.
+    """
+    super().__init__(
+      static_image_mode=static_image_mode,
+      max_num_faces=max_num_faces,
+      refine_landmarks=refine_landmarks,
+      min_detection_confidence=min_detection_confidence,
+      min_tracking_confidence=min_tracking_confidence
+    )
 
-            h,w,_=img.shape
+    self._left_eye_idx = list(
+      set(itertools.chain(*mp.solutions.face_mesh.FACEMESH_LEFT_EYE))
+    )[7]
+    self._right_eye_idx = list(
+      set(itertools.chain(*mp.solutions.face_mesh.FACEMESH_RIGHT_EYE))
+    )[4]
 
-            points=[]
+  def _aligner(self, /, img: np.ndarray) -> np.ndarray:
+    """Private helper function to align the given image parallel to the x-axis.
 
-            
-            x_coord=int(np.clip(face_landmarks.landmark[self.LEFT_EYE_INDEX].x*w,0,w))
-            y_coord=int(np.clip(face_landmarks.landmark[self.LEFT_EYE_INDEX].y*h,0,h))
-            points.append((x_coord,y_coord))
+    This function creates a line between the left and right eye points and tries
+    to align that line parallel to the x-axis, thus aligning the complete image.
 
-            
-            x_coord=int(np.clip(face_landmarks.landmark[self.RIGHT_EYE_INDEX].x*w,0,w))
-            y_coord=int(np.clip(face_landmarks.landmark[self.RIGHT_EYE_INDEX].y*h,0,h))
-            points.append((x_coord,y_coord))
+    Args:
+      img: Image to align parallel to the x-axis.
+    """
+    fm = self.process(img)
+    if fm is None:
+      return None
 
-            p0=np.array(points[0],dtype='float64')
-            p1=np.array(points[1],dtype='float64')
+    points = []
+    h, w, _ = img.shape
 
+    face_landmarks = fm.multi_face_landmarks[0]
 
-            h=abs(p0[1]-p1[1])
-            w=abs(p0[0]-p1[0])
+    le_x_coord = int(
+      np.clip(face_landmarks.landmark[self._left_eye_idx].x * w, 0, w)
+    )
+    le_y_coord = int(
+      np.clip(face_landmarks.landmark[self._left_eye_idx].y * h, 0, h)
+    )
+    p0 = np.array((le_x_coord, le_y_coord), dtype=np.float64)
 
-            theta=np.arctan(h/w)
+    re_x_coord = int(
+      np.clip(face_landmarks.landmark[self._right_eye_idx].x * w, 0, w)
+    )
+    re_y_coord = int(
+      np.clip(face_landmarks.landmark[self._right_eye_idx].y * h, 0, h)
+    )
+    p1 = np.array((re_x_coord, re_y_coord), dtype=np.float64)
 
-            angle=(theta * 180) / np.pi
+    h = abs(p0[1] - p1[1])
+    w = abs(p0[0] - p1[0])
 
-            def get_direction(p0,p1):
-                if p0[0]<p1[0]:
-                    if p0[1]<p1[1]:
-                        direction=1
-                    else:
-                        direction=-1
-                else:
-                    if p1[1]<p0[1]:
-                        direction=1
-                    else:
-                        direction=-1
-                return direction
+    # Get the angle between the x-axis and the line joining the eye points.
+    theta = np.arctan(h / w)
 
-            direction=get_direction(p0,p1)
-            angle=direction*angle
-            # print("rotated anticlockwise by :",angle,"angle")
-            new_img = PIL.Image.fromarray(img)
-            new_img = new_img.rotate(angle)
-            
-            return np.array(new_img)
-        else:
-            return None
+    angle = (theta * 180) / np.pi
+
+    if p0[0] < p1[0]:
+      direction = 1 if p0[1] < p1[1] else -1
+    else:
+      direction = 1 if p1[1] < p0[1] else -1
+
+    angle *= direction
+
+    img = PIL.Image.fromarray(img)
+    return np.array(img.rotate(angle))
+
+  def align(self, /, imgs: tuple[np.ndarray]) -> list[np.ndarray]:
+    """Aligns the given set of images parallel to the x-axis on the image plane.
+
+    Args:
+      imgs: Images to align parallel to the x-axis on the image place.
+    """
+    return [self._aligner(img) for img in imgs]

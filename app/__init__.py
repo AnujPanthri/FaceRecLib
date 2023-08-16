@@ -4,19 +4,19 @@ from datetime import timedelta
 from face_detection import inference as fd
 from face_detection.helper import get_crops as fd_get_crops
 from face_recognition import inference as fr
-from face_recognition.aligner import aligner
+from face_recognition.aligner import Aligner
 from face_recognition import helper as fr_helper
 
 
 
-# face_detector=fd.face_detection("face_detection/Models/v1")
+face_detector=fd.face_detection("face_detection/Models/v1")
 # face_detector=fd.face_detection("face_detection/Models/mobilenet")
-face_detector=fd.face_detection("face_detection/Models/BestMap")
+# face_detector=fd.face_detection("face_detection/Models/BestMap")
 face_detector.square_preprocessing=fd.square_pad()
 # face_recognizer=fr.face_recognition("face_recognition/Models/v1")
 # face_recognizer=fr.face_recognition("face_recognition/Models/mobilenet_basic_lfw")
 face_recognizer=fr.face_recognition("face_recognition/Models/keras_mobilenet_emore_adamw")
-aligner_obj=aligner()
+aligner_obj=Aligner()
 
 # image_size=544
 # p_thres=0.7

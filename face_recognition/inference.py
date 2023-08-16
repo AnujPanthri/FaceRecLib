@@ -14,7 +14,7 @@ import importlib
 
 
 from face_recognition import config
-from face_recognition.aligner import  aligner
+from face_recognition.aligner import  Aligner
 
 
 
@@ -25,7 +25,7 @@ class face_recognition:
     self.model_config= importlib.import_module(config_file_path)
     # print(self.model_config)
     self.thres=thres if thres is not None else self.model_config.d_thres
-    self.aligner=aligner(min_aligner_confidence)  if min_aligner_confidence is not None else aligner(config.min_aligner_confidence)
+    self.aligner=Aligner(min_aligner_confidence)  if min_aligner_confidence is not None else Aligner(config.min_aligner_confidence)
     self.feature_extractor=tf.keras.models.load_model(model_path+"/model.h5",compile=False)
     
     
@@ -139,7 +139,7 @@ class face_recognition:
 
         crop_img=img[ymin:ymax,xmin:xmax]
         crop_img=cv2.resize(crop_img,[self.model_config.input_size,self.model_config.input_size])
-        crop_img=self.aligner.align_image(crop_img)
+        crop_img=self.aligner.align((crop_img,))
         
         
         if crop_img is not None:

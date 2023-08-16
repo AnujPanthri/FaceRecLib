@@ -42,7 +42,7 @@ def load_settings(func):
         # we will set image_size inside routes
 
         # set face aligner settings
-        aligner_obj.face_mesh_images.min_detection_confidence=session["demo"]['settings']['a_thres']
+        aligner_obj.min_detection_confidence=session["demo"]['settings']['a_thres']
 
         # set face recognizer settings
         face_recognizer.thres=session["demo"]['settings']['d_thres']

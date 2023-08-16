@@ -17,7 +17,7 @@ def get_crops(img,objs_found,aligner=None,resize:tuple=None):
 
         crop=img[ymin:ymax,xmin:xmax]
         if aligner is not None:
-            crop=aligner.align_image(crop)
+            crop=aligner.align((crop,))[0]
             if crop is None: continue
         if resize is not None:
             crop=square_maker(crop)
