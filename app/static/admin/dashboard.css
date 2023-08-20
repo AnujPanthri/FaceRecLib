@@ -1,32 +1,33 @@
-*{
-    padding: 3px 9px;
+* {
+  padding: 3px 9px;
 }
-#access_requests_table{
-    /* border:2px dashed black; */
-    
-    /* position: absolute;
+#access_requests_table {
+  /* border:2px dashed black; */
+
+  /* position: absolute;
     top:50%;
     left:50%;
     transform: translate(-50%,-50%); */
-    width:fit-content;
-
+  width: fit-content;
 }
 
-table, th, td {
-    border:2px solid black;
-    border-collapse: collapse;
+table,
+th,
+td {
+  border: 2px solid black;
+  border-collapse: collapse;
 }
 
-button{
-    cursor: pointer;
+button {
+  cursor: pointer;
 }
 
-.accept{
-    background-color: greenyellow;
+.accept {
+  background-color: greenyellow;
 }
-.reject{
-    background-color: red;
+.reject {
+  background-color: red;
 }
-.revoke{
-    background-color: blueviolet;
+.revoke {
+  background-color: blueviolet;
 }

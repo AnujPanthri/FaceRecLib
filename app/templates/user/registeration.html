@@ -1,34 +1,56 @@
-{% extends 'base.html' %}
-{% block title %}Sign Up{% endblock %}
-{% block css %}
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='user/registeration.css') }}">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"> -->
-{% endblock %}
-{% block body %}        
-        <form id="container" method="post" action="/user/add_account/" onsubmit="return validate_form(this)">
-            <h1>Sign-Up</h1>
-            <p>message</p>
-            <div>
-                <p>Enter Username:</p>
-                <input type="username" name="username" required onblur="check_username(this);">
-            </div>
-            <div>
-                <p>Enter password:</p>
-                <input type="password" name="password" id="password" required>
-            </div>
-            <div>
-                <p>Confirm password:</p>
-                <input type="password" name="confirm_password" required onkeyup="check_password_is_matching(this);">
-            </div>
-            <div>
-                <!-- <p>What will you use this api for:</p> -->
-                <textarea placeholder="What will you use this api for, Write atleast 2-3 lines" rows=10 cols="60" name="request_message" id="request_message" required></textarea>
-                <!-- <input type="text"> -->
-            </div>
-            <input type="submit" >
-            <!-- <button>Sign-in</button> -->
-            
-        </form>
-        <script src="{{ url_for('static',filename='user/registeration.js') }}"></script>
-        
+{% extends 'base.html' %} {% block title %}Sign Up{% endblock %} {% block css %}
+<link
+  type="text/css"
+  rel="stylesheet"
+  href="{{ url_for('static',filename='user/registeration.css') }}"
+/>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"> -->
+{% endblock %} {% block body %}
+<form
+  id="container"
+  method="post"
+  action="/user/add_account/"
+  onsubmit="return validate_form(this)"
+>
+  <h1>Sign-Up</h1>
+  <p>message</p>
+  <div>
+    <p>Enter Username:</p>
+    <input
+      type="username"
+      name="username"
+      required
+      onblur="check_username(this);"
+    />
+  </div>
+  <div>
+    <p>Enter password:</p>
+    <input type="password" name="password" id="password" required />
+  </div>
+  <div>
+    <p>Confirm password:</p>
+    <input
+      type="password"
+      name="confirm_password"
+      required
+      onkeyup="check_password_is_matching(this);"
+    />
+  </div>
+  <div>
+    <!-- <p>What will you use this api for:</p> -->
+    <textarea
+      placeholder="What will you use this api for, Write atleast 2-3 lines"
+      rows="10"
+      cols="60"
+      name="request_message"
+      id="request_message"
+      required
+    ></textarea>
+    <!-- <input type="text"> -->
+  </div>
+  <input type="submit" />
+  <!-- <button>Sign-in</button> -->
+</form>
+<script src="{{ url_for('static',filename='user/registeration.js') }}"></script>
+
 {% endblock %}

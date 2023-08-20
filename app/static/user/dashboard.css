@@ -1,305 +1,292 @@
-:root{
-    /* --color-primary:#7380ec; */
-    /* --color-primary:rgb(205, 18, 234); */
-    --color-primary:rgb(163 18 234);
-    --color-secondary:rgb(173, 54, 232);
+:root {
+  /* --color-primary:#7380ec; */
+  /* --color-primary:rgb(205, 18, 234); */
+  --color-primary: rgb(163 18 234);
+  --color-secondary: rgb(173, 54, 232);
 
-    --color-name-border:red;
+  --color-name-border: red;
 }
 
-
-#api-key{
-    border:2px dashed black;
-    width:fit-content;
-    display: flex;
-    flex-direction: row;
-    /* column-gap: 2px; */
-
+#api-key {
+  border: 2px dashed black;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  /* column-gap: 2px; */
 }
 
-#api-key>p{
-    border:none;
-    padding:0 4px;
-    /* border-right: 2px solid black; */
-
+#api-key > p {
+  border: none;
+  padding: 0 4px;
+  /* border-right: 2px solid black; */
 }
 
-#api-key>button{
-    /* padding:6px; */
-    /* border: 2px solid black; */
-    /* line-height: 2; */
-    cursor: pointer;
+#api-key > button {
+  /* padding:6px; */
+  /* border: 2px solid black; */
+  /* line-height: 2; */
+  cursor: pointer;
 }
 
-#database-form{
-    border:1px solid black;
-    display: flex;
-    flex-direction: column;
-    width:500px;
-    padding: 4px;
-    row-gap: 3px;
-    height: fit-content;
+#database-form {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  padding: 4px;
+  row-gap: 3px;
+  height: fit-content;
 }
 
-#database-form>.crops{
-    width:300px;
-    height:60px;
-    border:1px solid black;
+#database-form > .crops {
+  width: 300px;
+  height: 60px;
+  border: 1px solid black;
 }
-#database-form>.assigned-crops{
-    width:300px;
-    height:100px;
-    border:1px solid black;
-}
-
-#database-form>.assigned-crops>.remark-crops{
-    width:300px;
-    height:100px;
-    border:1px solid black;
+#database-form > .assigned-crops {
+  width: 300px;
+  height: 100px;
+  border: 1px solid black;
 }
 
-#database-form>.field{
-    display: flex;
-    flex-direction: row;
-    justify-items: center;
-    height: 30px;
-    overflow: hidden;
-    height: fit-content;
+#database-form > .assigned-crops > .remark-crops {
+  width: 300px;
+  height: 100px;
+  border: 1px solid black;
 }
 
-#database-form>.field>p{
-    padding: 0;
-    margin: 0;
-    width: fit-content;
-    height: fit-content;
-    margin-top: 0.3rem;
+#database-form > .field {
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  height: 30px;
+  overflow: hidden;
+  height: fit-content;
 }
 
+#database-form > .field > p {
+  padding: 0;
+  margin: 0;
+  width: fit-content;
+  height: fit-content;
+  margin-top: 0.3rem;
+}
 
 /*Copied from demo page css*/
 
-#unassigned_faces{
-    width:100%;
-    height:100px;
-    border:1px solid rgb(255, 66, 255);
-    padding:10px;
-    column-gap: 5px;
-    
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    box-sizing: border-box;
-    overflow: scroll hidden;
+#unassigned_faces {
+  width: 100%;
+  height: 100px;
+  border: 1px solid rgb(255, 66, 255);
+  padding: 10px;
+  column-gap: 5px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: scroll hidden;
 }
 
-
-
-
-
-
-#remark_list{
-    width:100%;
-    height: 206px;
-    /* border:2px solid rgb(66, 113, 255); */
-    overflow: hidden scroll;
-    padding:15px;
-    box-sizing: border-box;
+#remark_list {
+  width: 100%;
+  height: 206px;
+  /* border:2px solid rgb(66, 113, 255); */
+  overflow: hidden scroll;
+  padding: 15px;
+  box-sizing: border-box;
 }
 
-#remark_list>.remark{
-    width:100%;
-    height: 80px;
-    border-bottom:2px solid var(--color-name-border);
-    position: relative;
-    padding: 4px 1px;
-    display: flex;
-    align-items: end;
+#remark_list > .remark {
+  width: 100%;
+  height: 80px;
+  border-bottom: 2px solid var(--color-name-border);
+  position: relative;
+  padding: 4px 1px;
+  display: flex;
+  align-items: end;
 }
-#remark_list>.remark>input{
-    position: absolute;
-    left:5px;
-    top:5px;
-    /* padding: inherit; */
-    background-color: transparent;
-    border:none;
-    outline: none;
+#remark_list > .remark > input {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  /* padding: inherit; */
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
-#remark_list>.remark>input:focus{
-    border-bottom: 1px solid var(--color-name-border);
-}
-
-#remark_list>.remark>i{
-    color:red;
-    position: absolute;
-    top:50%;
-    transform: translate(0,-50%);
-    right:20px;
-    
-}
-#remark_list>.remark>i:hover{
-    cursor:pointer;
+#remark_list > .remark > input:focus {
+  border-bottom: 1px solid var(--color-name-border);
 }
 
-#remark_list>.remark>.faces{
-    height:fit-content;
-    width: 100%;
-    display: flex;
-    column-gap: 5px;
+#remark_list > .remark > i {
+  color: red;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  right: 20px;
+}
+#remark_list > .remark > i:hover {
+  cursor: pointer;
 }
 
-.buttons{
-    display: flex;
-    justify-content: center;
+#remark_list > .remark > .faces {
+  height: fit-content;
+  width: 100%;
+  display: flex;
+  column-gap: 5px;
 }
 
-#add_remark_btn{
-    margin: 40px;
-    padding: 4px 12px;
-    width:fit-content;
-    height:inherit;
+.buttons {
+  display: flex;
+  justify-content: center;
 }
 
-.btn{
-    background-color: var(--color-primary);
-    box-shadow: 0px 0px 43px -4px var(--color-secondary);
-    border-radius: 5px;
-    border:none;
+#add_remark_btn {
+  margin: 40px;
+  padding: 4px 12px;
+  width: fit-content;
+  height: inherit;
 }
-.btn:hover{
-    cursor: pointer;
-    background-color: var(--color-secondary);
-    /* box-shadow: 0px 0px 43px -4px var(--color-secondary); */
-    
+
+.btn {
+  background-color: var(--color-primary);
+  box-shadow: 0px 0px 43px -4px var(--color-secondary);
+  border-radius: 5px;
+  border: none;
+}
+.btn:hover {
+  cursor: pointer;
+  background-color: var(--color-secondary);
+  /* box-shadow: 0px 0px 43px -4px var(--color-secondary); */
 }
 
 /*end of Copied from demo page css*/
 
-#database-form>.field>.add_button{
-    height: 60px;
-    width: 20%;
-    padding: 2px;
-    margin: auto 0;
-    margin-right: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    z-index: 2;
+#database-form > .field > .add_button {
+  height: 60px;
+  width: 20%;
+  padding: 2px;
+  margin: auto 0;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 2;
 }
 
-
-#database-form>.field>.add_button>i{
-    color:white;
-    background-color: inherit;
-    font-size: 3em;
+#database-form > .field > .add_button > i {
+  color: white;
+  background-color: inherit;
+  font-size: 3em;
 }
-.crop_img{
-    height: 60px;
-}
-
-#face_recognition_image{
-    height:200px;
-    width:200px;
+.crop_img {
+  height: 60px;
 }
 
-
-#db_people_table{
-    width:300px;
-    height:200px;
+#face_recognition_image {
+  height: 200px;
+  width: 200px;
 }
 
-
-table, th, td {
-    border:2px solid black;
-    border-collapse: collapse;
-    text-align: center;
+#db_people_table {
+  width: 300px;
+  height: 200px;
 }
 
-.remove{
-    background-color: red;
+table,
+th,
+td {
+  border: 2px solid black;
+  border-collapse: collapse;
+  text-align: center;
 }
 
-button:hover{
-    cursor: pointer;
+.remove {
+  background-color: red;
 }
 
+button:hover {
+  cursor: pointer;
+}
 
 /*copied from demo page*/
 
-.settings_btn{
-    position: absolute;
-    top:40px;
-    right:40px;
-    font-size: larger;
+.settings_btn {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  font-size: larger;
 }
 
-#settings_menu{
-    background-color: white;
-    height: fit-content;
-    width:40%;
-    z-index: 10000;
-    position: absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
-    border-radius: 10px;
-    box-shadow: 0px 0px 43px -4px var(--color-primary);
-    padding: 2px 20px;
-    display: none;
+#settings_menu {
+  background-color: white;
+  height: fit-content;
+  width: 40%;
+  z-index: 10000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-shadow: 0px 0px 43px -4px var(--color-primary);
+  padding: 2px 20px;
+  display: none;
 }
-#settings_menu>h1{
-    background-color: inherit;
+#settings_menu > h1 {
+  background-color: inherit;
 }
-#settings_menu>.settings{
-    background-color: inherit;
-    height: 280px;
-    overflow: hidden scroll;
-    position: relative;
-}
-
-#settings_menu>.close_btn{
-    color:red;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: larger;
-    background-color: transparent;
-}
-#settings_menu>.close_btn:hover{
-    cursor: pointer;
+#settings_menu > .settings {
+  background-color: inherit;
+  height: 280px;
+  overflow: hidden scroll;
+  position: relative;
 }
 
-.reset_btn_container{
-    position: absolute;
-    top: 20px;
-    right: 30px;   
+#settings_menu > .close_btn {
+  color: red;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: larger;
+  background-color: transparent;
 }
-.reset_btn_container>.reset_btn{
-    color:black;
-    position: fixed;
-    font-size: larger;
-    background-color: transparent;
-}
-.reset_btn_container>.reset_btn:hover{
-    cursor: pointer;
+#settings_menu > .close_btn:hover {
+  cursor: pointer;
 }
 
-#container.blur{
-    filter: blur(5px);
-    pointer-events: none;
+.reset_btn_container {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+}
+.reset_btn_container > .reset_btn {
+  color: black;
+  position: fixed;
+  font-size: larger;
+  background-color: transparent;
+}
+.reset_btn_container > .reset_btn:hover {
+  cursor: pointer;
 }
 
-#save_btn_container{
-    display: flex;
-    justify-content: center;
-    margin: 10px 0px;
-    font-size: large;
+#container.blur {
+  filter: blur(5px);
+  pointer-events: none;
 }
-#save_settings_btn{
-    background-color: rgb(76, 76, 232);
-    outline: none;
-    border: none;
-    border-radius: 6px;
+
+#save_btn_container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px;
+  font-size: large;
+}
+#save_settings_btn {
+  background-color: rgb(76, 76, 232);
+  outline: none;
+  border: none;
+  border-radius: 6px;
 }
 
 /*End copied from demo page*/

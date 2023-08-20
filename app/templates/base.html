@@ -1,15 +1,25 @@
 <html>
-    <head>
-        
-        <title>{% block title %}Face Recognization{% endblock %}</title>
-        
-        <link type="image/*" rel="icon" href="{{ url_for('static',filename='demo/index/icon.jpg' ) }}">
-        <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='global.css' ) }}">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <head>
+    <title>{% block title %}Face Recognization{% endblock %}</title>
 
-        {% block css %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <link
+      type="image/*"
+      rel="icon"
+      href="{{ url_for('static',filename='demo/index/icon.jpg' ) }}"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="{{ url_for('static',filename='global.css' ) }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+  </body>
 </html>

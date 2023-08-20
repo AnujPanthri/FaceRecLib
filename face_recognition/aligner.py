@@ -8,18 +8,15 @@ import os
 import shutil
 
 
-
 class Aligner(mp.solutions.face_mesh.FaceMesh):
   """Inherits from MediaPipe Face Mesh."""
 
-  def __init__(
-    self,
-    static_image_mode: bool = True,
-    max_num_faces: int = 1,
-    refine_landmarks: bool = False,
-    min_detection_confidence: float = 0.5,
-    min_tracking_confidence: float = 0.5
-  ):
+  def __init__(self,
+               static_image_mode: bool = True,
+               max_num_faces: int = 1,
+               refine_landmarks: bool = False,
+               min_detection_confidence: float = 0.5,
+               min_tracking_confidence: float = 0.5):
     """Initializes a Image Aligner object.
 
     Unlike MediaPipe Face Mesh we set `static_image_mode` to `True` as we only
@@ -37,20 +34,16 @@ class Aligner(mp.solutions.face_mesh.FaceMesh):
       min_tracking_confidence: Minimum confidence value ([0.0, 1.0]) for the
         face landmarks to be considered tracked successfully.
     """
-    super().__init__(
-      static_image_mode=static_image_mode,
-      max_num_faces=max_num_faces,
-      refine_landmarks=refine_landmarks,
-      min_detection_confidence=min_detection_confidence,
-      min_tracking_confidence=min_tracking_confidence
-    )
+    super().__init__(static_image_mode=static_image_mode,
+                     max_num_faces=max_num_faces,
+                     refine_landmarks=refine_landmarks,
+                     min_detection_confidence=min_detection_confidence,
+                     min_tracking_confidence=min_tracking_confidence)
 
     self._left_eye_idx = list(
-      set(itertools.chain(*mp.solutions.face_mesh.FACEMESH_LEFT_EYE))
-    )[7]
+        set(itertools.chain(*mp.solutions.face_mesh.FACEMESH_LEFT_EYE)))[7]
     self._right_eye_idx = list(
-      set(itertools.chain(*mp.solutions.face_mesh.FACEMESH_RIGHT_EYE))
-    )[4]
+        set(itertools.chain(*mp.solutions.face_mesh.FACEMESH_RIGHT_EYE)))[4]
 
   def _aligner(self, /, img: np.ndarray) -> np.ndarray:
     """Private helper function to align the given image parallel to the x-axis.
@@ -71,19 +64,15 @@ class Aligner(mp.solutions.face_mesh.FaceMesh):
     face_landmarks = fm.multi_face_landmarks[0]
 
     le_x_coord = int(
-      np.clip(face_landmarks.landmark[self._left_eye_idx].x * w, 0, w)
-    )
+        np.clip(face_landmarks.landmark[self._left_eye_idx].x * w, 0, w))
     le_y_coord = int(
-      np.clip(face_landmarks.landmark[self._left_eye_idx].y * h, 0, h)
-    )
+        np.clip(face_landmarks.landmark[self._left_eye_idx].y * h, 0, h))
     p0 = np.array((le_x_coord, le_y_coord), dtype=np.float64)
 
     re_x_coord = int(
-      np.clip(face_landmarks.landmark[self._right_eye_idx].x * w, 0, w)
-    )
+        np.clip(face_landmarks.landmark[self._right_eye_idx].x * w, 0, w))
     re_y_coord = int(
-      np.clip(face_landmarks.landmark[self._right_eye_idx].y * h, 0, h)
-    )
+        np.clip(face_landmarks.landmark[self._right_eye_idx].y * h, 0, h))
     p1 = np.array((re_x_coord, re_y_coord), dtype=np.float64)
 
     h = abs(p0[1] - p1[1])

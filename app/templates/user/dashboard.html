@@ -1,159 +1,230 @@
-{% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
-{% block css %}
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='user/dashboard.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-{% endblock %}
-{% block body %} 
+{% extends 'base.html' %} {% block title %}Dashboard{% endblock %} {% block css
+%}
+<link
+  type="text/css"
+  rel="stylesheet"
+  href="{{ url_for('static',filename='user/dashboard.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+/>
+{% endblock %} {% block body %}
 <!--     
     <div id="request-api-access">
         <textarea onkeyup="count_words(this);" id="inputField" rows=10 cols="60">{{data_dict["request_message"]}}</textarea>
         <button><i class="fa-solid fa-plus"></i> Request Api Access</button>
     </div> -->
-    
-    <br>
-    <br>
-    
-    {% if data_dict['access_key']==None %}
 
-    <p>You will be soon provided access after someone reviews your api access request</p>
-    
+<br />
+<br />
 
-    {% elif data_dict['access_key']=='rejected' %}
-    <p>sorry you are not given access </p>
-    {% else %}
-    {% include 'loader.html' %}
-    <i  class="fa-solid fa-gear settings_btn" onclick="show_settings();"></i>
-    <div id="container">
-        <div id="api-key">
-            <!-- <input type="text" value="{{data_dict['access_key']}}"> -->
-            <p>{{data_dict['access_key']}}</p>
-            <button class="copy"><i class="fa fa-copy"></i></button>
-            <button class="refresh"><i class="fa fa-refresh"></i> Request new key</button>
-        </div>
-            <br>
-        <form id="database-form" onsubmit="return false;">
-            
-            <div class="field">
-                <p>Name:</p>
-                <input class="person_name" type="text">
-            </div>
+{% if data_dict['access_key']==None %}
 
-            <div class="field">
-                <button class="btn add_button" onclick="document.querySelector('.add_button>input').click();">
-                    <input type="file" accept="image/*" style="display:none;" >
-                    <i class="fa-solid fa-plus"></i>
-                    add image
-                </button>
-            </div>
+<p>
+  You will be soon provided access after someone reviews your api access request
+</p>
 
-
-            <div id="unassigned_faces" class="droppable" ondragover="allowDrop(event)" ondrop="drop(event,this)"></div>
-            <p>Drag faces to remarks</p>
-
-            <!--assigned faces with names list-->
-            <div id="remark_list">
-                <div class="remark droppable" data-dropto=".faces" ondragover="allowDrop(event)" ondrop="drop(event,this.querySelector('#remark_list>.remark>.faces'))">
-                    <input type="text" value="front-face" ondrop="return false;" onkeyup="deselect(event,this);">
-                    <div class="faces"></div>
-                    <i class="fa-solid fa-xmark" onclick="remove_remark(this.parentElement);"></i>
-                    
-                </div>
-            </div>
-            <!--add name button-->
-            <div class="buttons">
-                <input type="button" value="add remark" class="btn" onclick="add_remark();" id="add_remark_btn">
-            </div>
-            <input type="button" value="submit" onclick="update_db_crops();">       
-        </form>
-        <table id="db_people_table">
-            <tbody>
-                <tr>
-                    <th>Person_ID</th>
-                    <th>Remarks</th>
-                    <th>Remove</th>
-                </tr> 
-            </tbody>
-        </table>
-        <br>
-        <br>
-        <input type="file" onchange="face_recoginization(this);">
-        <img id="face_recognition_image">
+{% elif data_dict['access_key']=='rejected' %}
+<p>sorry you are not given access</p>
+{% else %} {% include 'loader.html' %}
+<i class="fa-solid fa-gear settings_btn" onclick="show_settings();"></i>
+<div id="container">
+  <div id="api-key">
+    <!-- <input type="text" value="{{data_dict['access_key']}}"> -->
+    <p>{{data_dict['access_key']}}</p>
+    <button class="copy"><i class="fa fa-copy"></i></button>
+    <button class="refresh">
+      <i class="fa fa-refresh"></i> Request new key
+    </button>
+  </div>
+  <br />
+  <form id="database-form" onsubmit="return false;">
+    <div class="field">
+      <p>Name:</p>
+      <input class="person_name" type="text" />
     </div>
 
-    <div id="settings_menu">
-        <h1>settings</h1>
-        <i class="fa-solid fa-xmark close_btn" onclick="hide_settings();"></i>
-        
-        <div class="settings">
-            <div class="reset_btn_container">
-                <i class="fa-solid fa-rotate-left reset_btn" onclick="reset_settings();"></i>
-            </div>
-            <dl>
-                <li>Face detector Modes</li>
-                <dd>
-                    <a>db_mode :</a>
-                    <select id="db_mode">
-                        <option value="small">small</option>
-                        <option value="large">large</option>
-                        <option value="both">both</option>
-                      </select>
-                    
-                </dd>
-                <dd>
-                    <a>fr_mode :</a>
-                    <select id="fr_mode">
-                        <option value="small">small</option>
-                        <option value="large">large</option>
-                        <option value="both">both</option>
-                      </select>
-                    
-                </dd>
-                <br>
-                <li>Face detector</li>
-                <dd>
-                    <a>p_thres :</a>
-                    <input id="p_thres" type="range" min="0" max="1" step="0.05" oninput="p_thresValue.innerText=this.value">
-                    <a id="p_thresValue"></a>
-                </dd>
-                <dd>
-                    <a>nms_thres :</a>
-                    <input id="nms_thres" type="range" min="0" max="1" step="0.05" oninput="nms_thresValue.innerText=this.value">
-                    <a id="nms_thresValue"></a>
-                </dd>
-                <dd>
-                    <a>small_size :</a>
-                    <input id="small_size" type="range" min="64" max="2080" step="32" oninput="small_sizeValue.innerText=this.value">
-                    <a id="small_sizeValue"></a>
-                </dd>
-                <dd>
-                    <a>large_size :</a>
-                    <input id="large_size" type="range" min="64" max="2080" step="32" oninput="large_sizeValue.innerText=this.value">
-                    <a id="large_sizeValue"></a>
-                </dd>
-                <br>
-                <li>Face Recognizer</li>
-                <dd>
-                    <a>d_thres :</a>
-                    <input id="d_thres" type="range" min="0" max="1" step="0.05" oninput="d_thresValue.innerText=this.value">
-                    <a id="d_thresValue"></a>
-                </dd>
-                <br>
-                <li>Aligner</li>
-                <dd>
-                    <a>a_thres :</a>
-                    <input id="a_thres" type="range" min="0" max="1" step="0.05" oninput="a_thresValue.innerText=this.value">
-                    <a id="a_thresValue"></a>
-                </dd>
-                
-                
-            </dl>
-        </div>
-        <div id="save_btn_container"><button id="save_settings_btn" onclick="update_settings();">Save</button></div>
-        
+    <div class="field">
+      <button
+        class="btn add_button"
+        onclick="document.querySelector('.add_button>input').click();"
+      >
+        <input type="file" accept="image/*" style="display: none" />
+        <i class="fa-solid fa-plus"></i>
+        add image
+      </button>
     </div>
-    <script src="{{url_for('static',filename='resize.js')}}"></script>
-    <script src="{{ url_for('static',filename='user/dashboard.js') }}"></script>
-    {% endif %}
-        
-{% endblock %}
+
+    <div
+      id="unassigned_faces"
+      class="droppable"
+      ondragover="allowDrop(event)"
+      ondrop="drop(event,this)"
+    ></div>
+    <p>Drag faces to remarks</p>
+
+    <!--assigned faces with names list-->
+    <div id="remark_list">
+      <div
+        class="remark droppable"
+        data-dropto=".faces"
+        ondragover="allowDrop(event)"
+        ondrop="drop(event,this.querySelector('#remark_list>.remark>.faces'))"
+      >
+        <input
+          type="text"
+          value="front-face"
+          ondrop="return false;"
+          onkeyup="deselect(event,this);"
+        />
+        <div class="faces"></div>
+        <i
+          class="fa-solid fa-xmark"
+          onclick="remove_remark(this.parentElement);"
+        ></i>
+      </div>
+    </div>
+    <!--add name button-->
+    <div class="buttons">
+      <input
+        type="button"
+        value="add remark"
+        class="btn"
+        onclick="add_remark();"
+        id="add_remark_btn"
+      />
+    </div>
+    <input type="button" value="submit" onclick="update_db_crops();" />
+  </form>
+  <table id="db_people_table">
+    <tbody>
+      <tr>
+        <th>Person_ID</th>
+        <th>Remarks</th>
+        <th>Remove</th>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <br />
+  <input type="file" onchange="face_recoginization(this);" />
+  <img id="face_recognition_image" />
+</div>
+
+<div id="settings_menu">
+  <h1>settings</h1>
+  <i class="fa-solid fa-xmark close_btn" onclick="hide_settings();"></i>
+
+  <div class="settings">
+    <div class="reset_btn_container">
+      <i
+        class="fa-solid fa-rotate-left reset_btn"
+        onclick="reset_settings();"
+      ></i>
+    </div>
+    <dl>
+      <li>Face detector Modes</li>
+      <dd>
+        <a>db_mode :</a>
+        <select id="db_mode">
+          <option value="small">small</option>
+          <option value="large">large</option>
+          <option value="both">both</option>
+        </select>
+      </dd>
+      <dd>
+        <a>fr_mode :</a>
+        <select id="fr_mode">
+          <option value="small">small</option>
+          <option value="large">large</option>
+          <option value="both">both</option>
+        </select>
+      </dd>
+      <br />
+      <li>Face detector</li>
+      <dd>
+        <a>p_thres :</a>
+        <input
+          id="p_thres"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          oninput="p_thresValue.innerText=this.value"
+        />
+        <a id="p_thresValue"></a>
+      </dd>
+      <dd>
+        <a>nms_thres :</a>
+        <input
+          id="nms_thres"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          oninput="nms_thresValue.innerText=this.value"
+        />
+        <a id="nms_thresValue"></a>
+      </dd>
+      <dd>
+        <a>small_size :</a>
+        <input
+          id="small_size"
+          type="range"
+          min="64"
+          max="2080"
+          step="32"
+          oninput="small_sizeValue.innerText=this.value"
+        />
+        <a id="small_sizeValue"></a>
+      </dd>
+      <dd>
+        <a>large_size :</a>
+        <input
+          id="large_size"
+          type="range"
+          min="64"
+          max="2080"
+          step="32"
+          oninput="large_sizeValue.innerText=this.value"
+        />
+        <a id="large_sizeValue"></a>
+      </dd>
+      <br />
+      <li>Face Recognizer</li>
+      <dd>
+        <a>d_thres :</a>
+        <input
+          id="d_thres"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          oninput="d_thresValue.innerText=this.value"
+        />
+        <a id="d_thresValue"></a>
+      </dd>
+      <br />
+      <li>Aligner</li>
+      <dd>
+        <a>a_thres :</a>
+        <input
+          id="a_thres"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          oninput="a_thresValue.innerText=this.value"
+        />
+        <a id="a_thresValue"></a>
+      </dd>
+    </dl>
+  </div>
+  <div id="save_btn_container">
+    <button id="save_settings_btn" onclick="update_settings();">Save</button>
+  </div>
+</div>
+<script src="{{url_for('static',filename='resize.js')}}"></script>
+<script src="{{ url_for('static',filename='user/dashboard.js') }}"></script>
+{% endif %} {% endblock %}
