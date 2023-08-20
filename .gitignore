@@ -1,5 +1,14 @@
-# *.h5
+# Ignore virtual environments
+facerec_dev/
+dev/
+vevn/
+# TODO(AnujPanthri): Remove the following entry once myvenv is replaced with
+# any of the above entry
 myvenv/
+
+# Ignore all python compiled files
 __pycache__/
+
+# Models hosted on Model Hub at huggingface.co
 face_detection/Models/
 face_recognition/Models/
