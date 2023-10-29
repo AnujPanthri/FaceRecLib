@@ -1,0 +1,14 @@
+myvenv
+venv
+
+save
+roboflow.voc
+output
+images
+flagged
+__pycache__
+reference_database
+face_detection_models
+crops
+
+lfw.bin
