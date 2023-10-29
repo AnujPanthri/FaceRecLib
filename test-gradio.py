@@ -13,14 +13,6 @@ import gradio as gr
 
 
 
-
-
-
-
-
-
-
-
 # fr_model_path="output/v1/"
 # fr_model_path="output/mobilenet/"
 fr_model_path="output/mobile_pretrained/"
@@ -51,7 +43,6 @@ face_recognizer.set_face_db_and_mode(faces,db_faces_features,recognition_mode="r
 
 
 
-
 model_path="face_detection_models/v3/"
 
 object_detector = yod.load_model_from_weights(model_path)
@@ -59,14 +50,17 @@ object_detector = yod.load_model_from_weights(model_path)
 object_detector.set_config(p_thres=0.5,nms_thres=0.3,image_size=[608,1024])
 # img="C:/Users/panth/OneDrive/Pictures/Camera Roll/WIN_20230815_13_49_11_Pro.jpg"
 
-def get_output(img,d_thres):
+def get_output(img,d_thres,p_thres,small_size,large_size):
+
+    object_detector.set_config(p_thres=p_thres,nms_thres=0.3,image_size=[small_size,large_size])
+    face_recognizer.set_config(thres=d_thres,min_aligner_confidence=0.6)
+    
     img_h,img_w,_=img.shape
     detections = object_detector.predict(img)
     # print(detections)
 
     crops = yod.inference.helper.get_crops(img,detections)
 
-    face_recognizer.set_config(thres=d_thres,min_aligner_confidence=0.6)
 
     recognitions=face_recognizer.predict(crops)
     print(recognitions)
@@ -85,9 +79,12 @@ def get_output(img,d_thres):
     return pred_img
 
 app = gr.Interface(get_output,inputs=[
-                                    # gr.Image(),
-                                    gr.Image(streaming=True,source="webcam"),
-                                    gr.Slider(0,1,value=0.6,label='d_thres'),
+                                    gr.Image(),
+                                    # gr.Image(streaming=True,source="webcam"),
+                                    gr.Slider(0,1,value=0.35,label='d_thres'),
+                                    gr.Slider(0,1,value=0.6,label='p_thres'),
+                                    gr.Slider(256,2080,step=32,value=608,label='small_image_size'),
+                                    gr.Slider(256,2080,step=32,value=1024,label='large_image_size'),
 
                                 ],
                                 outputs=[

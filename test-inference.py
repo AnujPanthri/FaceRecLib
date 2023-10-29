@@ -69,6 +69,7 @@ for idx in range(len(detections)):
 
 
 frl.inference.helper.show_objects(img,detections)
+# plt.show()
 
 # pred_img=frl.inference.helper.pred_image(img,detections,thickness=10,font_scale=4)
 # plt.imshow(pred_img)
