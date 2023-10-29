@@ -64,18 +64,8 @@ def get_output(img,d_thres):
     detections = object_detector.predict(img)
     # print(detections)
 
-    crops=[]
-    for detection in detections:
-        # [p,class_name,xmin,ymin,w,h]
-        _,_,xmin,ymin,w,h=detection
-        xmin , w = int(xmin*img_w) , int(w*img_w) 
-        ymin , h = int(ymin*img_h) , int(h*img_h) 
-        xmax , ymax = xmin+w , ymin+h
-        crops.append(img[ymin:ymax,xmin:xmax])
+    crops = yod.inference.helper.get_crops(img,detections)
 
-    # print(len(crops),"faces detected.")
-    # plt.imshow(crops[0])
-    # plt.show()
     face_recognizer.set_config(thres=d_thres,min_aligner_confidence=0.6)
 
     recognitions=face_recognizer.predict(crops)

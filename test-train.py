@@ -18,8 +18,8 @@ ds=frl.datasets.get_dataset(save_dir,bs=16)
 
 print(frl.config.classnames)
 
-# model=frl.models.get_feature_extractor_model(emb_size=128,model_type="mobilenet")
-model=frl.models.get_feature_extractor_model(emb_size=128,model_type="resnet50")
+model=frl.models.get_feature_extractor_model(emb_size=128,model_type="mobilenet")
+# model=frl.models.get_feature_extractor_model(emb_size=128,model_type="resnet50")
 model=frl.models.add_softmax(model)
 model.summary()
 

@@ -15,7 +15,7 @@ fr_model_path="output/mobilenet/"
 face_recognizer=frl.load_model(fr_model_path)
 # face_recognizer=frl.load_model_from_weights(fr_model_path)
 
-face_recognizer.set_config(thres=0.7,min_aligner_confidence=0.6)
+face_recognizer.set_config(thres=0.4,min_aligner_confidence=0.6)
 
 database_dir="reference_database/"
 faces=os.listdir(database_dir)
@@ -40,7 +40,7 @@ model_path="face_detection_models/v3/"
 
 object_detector = yod.load_model_from_weights(model_path)
 # object_detector.set_config(p_thres=0.5,nms_thres=0.3,image_size=[1024,2080])
-object_detector.set_config(p_thres=0.5,nms_thres=0.3,image_size=[608,1024])
+object_detector.set_config(p_thres=0.5,nms_thres=0.3,image_size=[416,608])
 # img="C:/Users/panth/OneDrive/Pictures/Camera Roll/WIN_20230815_13_49_11_Pro.jpg"
 img="C:/Users/panth/OneDrive/Pictures/Camera Roll/WIN_20231029_12_03_26_Pro.jpg"
 # img="D:/New folder/Face_Recognition/roboflow.voc/train/24_jpg.rf.75e6506ea525cec685510dae47417bd7.jpg"
@@ -49,14 +49,8 @@ img_h,img_w,_=img.shape
 detections = object_detector.predict(img)
 # print(detections)
 
-crops=[]
-for detection in detections:
-    # [p,class_name,xmin,ymin,w,h]
-    _,_,xmin,ymin,w,h=detection
-    xmin , w = int(xmin*img_w) , int(w*img_w) 
-    ymin , h = int(ymin*img_h) , int(h*img_h) 
-    xmax , ymax = xmin+w , ymin+h
-    crops.append(img[ymin:ymax,xmin:xmax])
+# crops = yod.inference.helper.get_crops(img,detections,aligner=frl.inference.Aligner(),resize=(frl.config.image_size,frl.config.image_size))
+crops = yod.inference.helper.get_crops(img,detections)
 
 print(len(crops),"faces detected.")
 # plt.imshow(crops[0])
@@ -74,8 +68,8 @@ for idx in range(len(detections)):
         detections[idx][1] = recognitions[idx][1]
 
 
-pred_img=frl.inference.helper.pred_image(img,detections,thickness=10,font_scale=4)
+frl.inference.helper.show_objects(img,detections)
 
-plt.imshow(pred_img)
-plt.show()
-# print(yod.inference.helper.pred_image(img,detections).shape)
+# pred_img=frl.inference.helper.pred_image(img,detections,thickness=10,font_scale=4)
+# plt.imshow(pred_img)
+# plt.show()
